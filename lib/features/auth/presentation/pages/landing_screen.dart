@@ -1,37 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:mro/basics_of_flutter_bloc/counter_bloc.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Flutter BLOC Pattern Demo'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class LandingScreen extends StatefulWidget {
+  const LandingScreen({super.key, required this.title});
 
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<LandingScreen> createState() => _LandingScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _LandingScreenState extends State<LandingScreen> {
   //int _counter = 0;
   final counterBlock = CounterBloc();
 
@@ -63,9 +42,8 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      floatingActionButton: Row(
-          mainAxisAlignment:MainAxisAlignment.spaceEvenly,
-          children: [
+      floatingActionButton:
+          Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
         FloatingActionButton(
           onPressed: () {
             // _counter++;
@@ -97,6 +75,3 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-
-// Reference
-// https://www.youtube.com/watch?v=jIoWkct6_EM

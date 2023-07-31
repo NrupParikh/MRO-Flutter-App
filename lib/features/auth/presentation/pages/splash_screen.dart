@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:mro/main_basics.dart';
+import 'package:mro/features/auth/presentation/pages/landing_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -22,7 +22,10 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(const Duration(seconds: 3), () {
       // Navigate To Main Screen
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => const MyApp()));
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  const LandingScreen(title: 'Flutter BLOC Pattern Demo')));
     });
   }
 
