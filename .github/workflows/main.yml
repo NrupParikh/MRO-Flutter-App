@@ -16,9 +16,11 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: '12.x'
+          cache: 'gradle'
       - uses: subosito/flutter-action@v1
         with:
           flutter-version: '3.10.6'
+          cache: 'gradle'
       - run: flutter pub get
       - run: flutter build apk --debug --split-per-abi
       #      - run: |
