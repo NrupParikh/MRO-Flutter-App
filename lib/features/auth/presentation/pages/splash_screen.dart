@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mro/features/auth/presentation/pages/landing_screen.dart';
 
+import '../widgets/my_custom_widget.dart';
+
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -19,13 +21,10 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void launchSplashScreen() {
     // Set 3 second timer for Splash Screen
-    Timer(const Duration(seconds: 3), () {
+    Timer(const Duration(seconds: 2), () {
       // Navigate To Main Screen
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  const LandingScreen(title: 'Flutter BLOC Pattern Demo')));
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => const LandingScreen()));
     });
   }
 
@@ -35,11 +34,17 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Container(
         color: Colors.white,
         child: Center(
-          child: Column(children: [
-            Image.asset("assets/images/img_splash.png"),
-            const Spacer(),
-            Image.asset("assets/images/img_scan_it_logo.png")
-          ]),
+          child: Stack(
+            children: [
+              Image.asset("assets/images/img_splash.png"),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 16),
+                child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: ScanItLogoImage()),
+              ),
+            ],
+          ),
         ),
       ),
     );
