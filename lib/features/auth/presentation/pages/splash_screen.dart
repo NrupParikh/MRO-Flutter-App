@@ -1,9 +1,7 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:mro/features/auth/presentation/pages/landing_screen.dart';
-
-import '../widgets/my_custom_widget.dart';
+import '../../../../config/app_constants.dart';
+import '../../../widgets/my_custom_widget.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -23,8 +21,8 @@ class _SplashScreenState extends State<SplashScreen> {
     // Set 3 second timer for Splash Screen
     Timer(const Duration(seconds: 2), () {
       // Navigate To Main Screen
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => const LandingScreen()));
+      Navigator.pushReplacementNamed(context, AppConstants.routeLanding);
+      // Navigator.pushNamedAndRemoveUntil(context, AppConstants.routeLanding, (route) => false);
     });
   }
 

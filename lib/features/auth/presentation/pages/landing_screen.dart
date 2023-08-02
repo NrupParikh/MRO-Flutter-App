@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mro/config/color_constants.dart';
-import 'package:mro/features/auth/presentation/pages/login_screen.dart';
+import 'package:mro/config/string_constants.dart';
 
-import '../widgets/my_custom_widget.dart';
+import '../../../../config/app_constants.dart';
+import '../../../widgets/my_custom_widget.dart';
 
 class LandingScreen extends StatefulWidget {
   const LandingScreen({super.key});
@@ -27,12 +28,9 @@ class _LandingScreenState extends State<LandingScreen> {
               height: 50,
             ),
             CustomElevatedButton(
-              buttonText: "LOGIN WITH CREDENTIALS",
+              buttonText: StringConstants.loginWithCredentials.toUpperCase(),
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const LoginScreen()));
+                Navigator.pushNamed(context, AppConstants.routeLogin);
               },
               buttonBgColor: ColorConstants.blueThemeColor,
             ),
@@ -44,7 +42,7 @@ class _LandingScreenState extends State<LandingScreen> {
               height: 10,
             ),
             CustomElevatedButton(
-                buttonText: "LOGIN WITH BIOMETRIC",
+                buttonText: StringConstants.loginWithBioMetric.toUpperCase(),
                 onPressed: () {
                   Fluttertoast.showToast(msg: "Login with Biometric");
                 },

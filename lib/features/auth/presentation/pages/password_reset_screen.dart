@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:mro/config/constants.dart';
-import 'package:mro/features/auth/presentation/pages/password_screen.dart';
+import 'package:mro/config/string_constants.dart';
 
 import '../../../../config/color_constants.dart';
-import '../widgets/my_custom_widget.dart';
+import '../../../widgets/my_custom_widget.dart';
 
 class PasswordResetScreen extends StatefulWidget {
   const PasswordResetScreen({super.key});
@@ -21,7 +19,7 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: const Text("Password Reset",
+          title: const Text(StringConstants.passwordReset,
               style: TextStyle(color: Colors.white)),
           backgroundColor: ColorConstants.blueThemeColor,
         ),
@@ -43,8 +41,8 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                     controller: emailController,
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        labelText: "User Name",
-                        hintText: "Enter User Name"),
+                        labelText: StringConstants.userName,
+                        hintText: StringConstants.hintEnterUserName),
                   ),
                 ),
               ),
@@ -66,8 +64,8 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
   // https://stackoverflow.com/questions/53844052/how-to-make-an-alertdialog-in-flutter
   void displayDialog(BuildContext context) {
     var dialog = MyCustomAlertDialog(
-      title: Constants.appFullName,
-      description: Constants.msgPasswordResetSuccess,
+      title: StringConstants.appFullName,
+      description: StringConstants.msgPasswordResetSuccess,
       onOkButtonPressed: () {
         Navigator.of(context, rootNavigator: true).pop();
       },

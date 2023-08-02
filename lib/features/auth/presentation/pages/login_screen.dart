@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:mro/features/auth/presentation/pages/password_reset_screen.dart';
-import 'package:mro/features/auth/presentation/pages/password_screen.dart';
+import 'package:mro/config/string_constants.dart';
 
+import '../../../../config/app_constants.dart';
 import '../../../../config/color_constants.dart';
-import '../widgets/my_custom_widget.dart';
+import '../../../widgets/my_custom_widget.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -37,8 +36,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: emailController,
                 decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: "User Name",
-                    hintText: "Enter User Name"),
+                    labelText: StringConstants.userName,
+                    hintText: StringConstants.hintEnterUserName),
               ),
             ),
           ),
@@ -48,10 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
           CustomElevatedButton(
               buttonText: "NEXT",
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const PasswordScreen()));
+                Navigator.pushNamed(context, AppConstants.routePassword);
               },
               buttonBgColor: ColorConstants.blueThemeColor),
           const Spacer(
@@ -60,12 +56,9 @@ class _LoginScreenState extends State<LoginScreen> {
           Padding(
             padding: const EdgeInsets.only(bottom: 32),
             child: CustomElevatedButton(
-                buttonText: "PASSWORD RESET",
+                buttonText: StringConstants.passwordReset.toUpperCase(),
                 onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const PasswordResetScreen()));
+                  Navigator.pushNamed(context, AppConstants.routePasswordReset);
                 },
                 buttonBgColor: Colors.red),
           ),
