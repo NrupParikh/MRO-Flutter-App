@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:local_auth/error_codes.dart' as auth_error;
+import 'package:local_auth/local_auth.dart';
 import 'package:mro/config/color_constants.dart';
 import 'package:mro/config/string_constants.dart';
 
@@ -14,6 +17,45 @@ class LandingScreen extends StatefulWidget {
 }
 
 class _LandingScreenState extends State<LandingScreen> {
+  late final LocalAuthentication auth;
+
+  @override
+  void initState() {
+    super.initState();
+    auth = LocalAuthentication();
+  }
+
+  // // ================== BIOMETRIC AUTHENTICATION
+
+  Future<void> authenticate() async {
+    try {
+      final bool didAuthenticate = await auth.authenticate(
+          localizedReason: "Please authenticate",
+          options: const AuthenticationOptions(
+              stickyAuth: true, biometricOnly: true));
+      if (didAuthenticate == true) {
+        Navigator.pushNamedAndRemoveUntil(
+            context, AppConstants.routeHome, (route) => false);
+      }
+    } on PlatformException catch (e) {
+      if (e.code == auth_error.notEnrolled) {
+        Fluttertoast.showToast(msg: StringConstants.localizedReason);
+      } else if (e.code == auth_error.lockedOut) {
+        Fluttertoast.showToast(msg: StringConstants.lockedOut);
+      } else if (e.code == auth_error.biometricOnlyNotSupported) {
+        Fluttertoast.showToast(msg: StringConstants.biometricOnlyNotSupported);
+      } else if (e.code == auth_error.notAvailable) {
+        Fluttertoast.showToast(msg: StringConstants.notAvailable);
+      } else if (e.code == auth_error.otherOperatingSystem) {
+        Fluttertoast.showToast(msg: StringConstants.otherOperatingSystem);
+      } else if (e.code == auth_error.passcodeNotSet) {
+        Fluttertoast.showToast(msg: StringConstants.passcodeNotSet);
+      } else if (e.code == auth_error.permanentlyLockedOut) {
+        Fluttertoast.showToast(msg: StringConstants.permanentlyLockedOut);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,7 +86,7 @@ class _LandingScreenState extends State<LandingScreen> {
             CustomElevatedButton(
                 buttonText: StringConstants.loginWithBioMetric.toUpperCase(),
                 onPressed: () {
-                  Fluttertoast.showToast(msg: "Login with Biometric");
+                  authenticate();
                 },
                 buttonBgColor: ColorConstants.blueThemeColor)
           ],
