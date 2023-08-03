@@ -22,6 +22,12 @@ class StringConstants {
   static const String syncMessage = "Sync MRO";
   static const String modify = "Modify";
 
+  // =========== TAB
+  static const String tabDraft = "Draft";
+  static const String tabPendingUpload = "Pending Upload";
+  static const String tabPendingApproval = "Pending Approval";
+  static const String tabApproved = "Approved";
+
   // =========== BIOMETRIC
   static const String localizedReason = "Please authenticate";
   static const String notEnrolled = "The user has not enrolled any biometrics on the device.";
