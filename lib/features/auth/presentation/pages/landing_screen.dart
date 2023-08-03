@@ -34,6 +34,7 @@ class _LandingScreenState extends State<LandingScreen> {
           options: const AuthenticationOptions(
               stickyAuth: true, biometricOnly: true));
       if (didAuthenticate == true) {
+        if (!mounted) return;
         Navigator.pushNamedAndRemoveUntil(
             context, AppConstants.routeHome, (route) => false);
       }

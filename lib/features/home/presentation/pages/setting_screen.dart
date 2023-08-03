@@ -14,7 +14,6 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   bool isBioMetric = true;
-  TextEditingController emailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {

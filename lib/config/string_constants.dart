@@ -19,6 +19,8 @@ class StringConstants {
   static const String settings = "Settings";
   static const String biometricAuthentication = "Biometric Authentication";
   static const String logout = "Logout";
+  static const String syncMessage = "Sync MRO";
+  static const String modify = "Modify";
 
   // =========== BIOMETRIC
   static const String localizedReason = "Please authenticate";

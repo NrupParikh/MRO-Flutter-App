@@ -23,6 +23,16 @@ class _HomeScreenState extends State<HomeScreen> {
           title: const Text(StringConstants.appFullName,
               style: TextStyle(color: Colors.white)),
           backgroundColor: ColorConstants.blueThemeColor,
+          actions: [
+            IconButton(
+                onPressed: () {
+                  Fluttertoast.showToast(msg: StringConstants.syncMessage);
+                },
+                icon: const Icon(
+                  Icons.refresh,
+                  color: Colors.white,
+                ))
+          ],
         ),
         body: GridView.count(
           padding: const EdgeInsets.all(16),
@@ -32,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             ElevatedButton(
               onPressed: () {
-                Fluttertoast.showToast(msg: "New Expenses");
+                Navigator.pushNamed(context, AppConstants.routeNewExpenses);
               },
               style: ElevatedButton.styleFrom(
                   backgroundColor: ColorConstants.homeScreenButtonBgColor,
@@ -50,16 +60,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(
                     height: 16,
                   ),
-                  const Text(
+                  Text(
                     StringConstants.newExpense,
-                    style: TextStyle(color: Color(0xff002848)),
+                    style: TextStyle(color: ColorConstants.blueThemeColor),
                   )
                 ],
               ),
             ),
             ElevatedButton(
               onPressed: () {
-                Fluttertoast.showToast(msg: "Archive");
+                Navigator.pushNamed(context, AppConstants.routeArchive);
               },
               style: ElevatedButton.styleFrom(
                   backgroundColor: ColorConstants.homeScreenButtonBgColor,
@@ -77,16 +87,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(
                     height: 16,
                   ),
-                  const Text(
+                  Text(
                     StringConstants.archive,
-                    style: TextStyle(color: Color(0xff002848)),
+                    style: TextStyle(color: ColorConstants.blueThemeColor),
                   )
                 ],
               ),
             ),
             ElevatedButton(
               onPressed: () {
-                Fluttertoast.showToast(msg: "My Approvals");
+                Navigator.pushNamed(context, AppConstants.routeMyApprovals);
               },
               style: ElevatedButton.styleFrom(
                   backgroundColor: ColorConstants.homeScreenButtonBgColor,
@@ -104,9 +114,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(
                     height: 16,
                   ),
-                  const Text(
+                  Text(
                     StringConstants.myApproval,
-                    style: TextStyle(color: Color(0xff002848)),
+                    style: TextStyle(color: ColorConstants.blueThemeColor),
                   )
                 ],
               ),
@@ -131,9 +141,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(
                     height: 16,
                   ),
-                  const Text(
+                  Text(
                     StringConstants.settings,
-                    style: TextStyle(color: Color(0xff002848)),
+                    style: TextStyle(color: ColorConstants.blueThemeColor),
                   )
                 ],
               ),
