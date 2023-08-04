@@ -1,4 +1,5 @@
 class AppConstants {
+  // Routes
   static const String routeSplash = "/splash";
   static const String routeLanding = "/landing";
   static const String routeLogin = "/login";

@@ -7,6 +7,7 @@ class StringConstants {
 
   static const String userName = "User Name";
   static const String passwordReset = "Password Reset";
+  static const String next = "Next";
   static const String password = "Password";
   static const String login = "Login";
 

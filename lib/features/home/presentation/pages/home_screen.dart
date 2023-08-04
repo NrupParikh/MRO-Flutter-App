@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:mro/config/string_constants.dart';
 
-import '../../../../config/app_constants.dart';
-import '../../../../config/color_constants.dart';
+import '../../../../config/constants/app_constants.dart';
+import '../../../../config/constants/color_constants.dart';
+import '../../../../config/constants/string_constants.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

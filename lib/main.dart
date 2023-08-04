@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mro/config/app_constants.dart';
+import 'package:mro/config/constants/app_constants.dart';
+import 'package:mro/features/auth/presentation/bloc/login_cubit.dart';
 import 'package:mro/features/auth/presentation/pages/landing_screen.dart';
 import 'package:mro/features/auth/presentation/pages/login_screen.dart';
 import 'package:mro/features/auth/presentation/pages/password_reset_screen.dart';
@@ -10,7 +11,7 @@ import 'package:mro/features/home/presentation/pages/archive_screen.dart';
 import 'package:mro/features/home/presentation/pages/home_screen.dart';
 import 'package:mro/features/home/presentation/pages/my_approvals_screen.dart';
 import 'package:mro/features/home/presentation/pages/new_expenses_screen.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'features/home/presentation/pages/setting_screen.dart';
 
 void main() {
@@ -39,7 +40,8 @@ class MyApp extends StatelessWidget {
       routes: {
         AppConstants.routeSplash: (context) => const SplashScreen(),
         AppConstants.routeLanding: (context) => const LandingScreen(),
-        AppConstants.routeLogin: (context) => const LoginScreen(),
+        AppConstants.routeLogin: (context) => BlocProvider(
+            create: (context) => LogInCubit(), child: const LoginScreen()),
         AppConstants.routePassword: (context) => const PasswordScreen(),
         AppConstants.routePasswordReset: (context) =>
             const PasswordResetScreen(),

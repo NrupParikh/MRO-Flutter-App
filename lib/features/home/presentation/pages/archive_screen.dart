@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:mro/config/string_constants.dart';
 
-import '../../../../config/color_constants.dart';
+import '../../../../config/constants/color_constants.dart';
+import '../../../../config/constants/string_constants.dart';
 
 class ArchiveScreen extends StatefulWidget {
   const ArchiveScreen({super.key});
@@ -61,9 +61,13 @@ class _ArchiveScreenState extends State<ArchiveScreen> {
             body: TabBarView(
               children: tabs.map((Tab tab) {
                 return Center(
-                  child: Text(
-                    "${tab.text} Tab",
-                    style: Theme.of(context).textTheme.headlineSmall,
+                  child: ListView.builder(
+                    itemCount: 50,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text("Item $index"),
+                      );
+                    },
                   ),
                 );
               }).toList(),

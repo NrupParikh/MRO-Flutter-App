@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mro/config/string_constants.dart';
 
-import '../../../../config/color_constants.dart';
+import '../../../../config/constants/color_constants.dart';
+import '../../../../config/constants/string_constants.dart';
 
 class NewExpensesScreen extends StatefulWidget {
   const NewExpensesScreen({super.key});

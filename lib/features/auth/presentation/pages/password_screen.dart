@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:mro/config/app_constants.dart';
-import 'package:mro/config/string_constants.dart';
-
+import 'package:mro/config/constants/app_constants.dart';
+import '../../../../config/constants/string_constants.dart';
 import '../../../widgets/my_custom_widget.dart';
 
 class PasswordScreen extends StatefulWidget {

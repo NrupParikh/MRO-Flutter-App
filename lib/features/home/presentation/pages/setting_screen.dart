@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mro/config/string_constants.dart';
 
-import '../../../../config/app_constants.dart';
-import '../../../../config/color_constants.dart';
+import '../../../../config/constants/app_constants.dart';
+import '../../../../config/constants/color_constants.dart';
+import '../../../../config/constants/string_constants.dart';
 import '../../../widgets/my_custom_widget.dart';
 
 class SettingsScreen extends StatefulWidget {

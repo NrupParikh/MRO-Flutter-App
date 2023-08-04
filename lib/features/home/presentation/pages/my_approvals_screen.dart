@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mro/config/string_constants.dart';
 
-import '../../../../config/color_constants.dart';
+import '../../../../config/constants/color_constants.dart';
+import '../../../../config/constants/string_constants.dart';
 
 class MyApprovalsScreen extends StatefulWidget {
   const MyApprovalsScreen({super.key});
