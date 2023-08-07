@@ -69,3 +69,33 @@ class MyCustomAlertDialog extends StatelessWidget {
     );
   }
 }
+
+// =============== SHOW AND HIDE LOADING
+
+void showLoading(
+    BuildContext context, GlobalKey<State<StatefulWidget>> dialogKey) {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    // Prevent the user from dismissing the dialog with a tap outside
+    builder: (BuildContext context) {
+      return AlertDialog(
+        key: dialogKey,
+        content: const Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            CircularProgressIndicator(),
+            SizedBox(height: 16.0),
+            Text("Loading..."),
+          ],
+        ),
+      );
+    },
+  );
+}
+
+void hideLoading(GlobalKey<State<StatefulWidget>> dialogKey) {
+  if (dialogKey.currentContext != null) {
+    Navigator.of(dialogKey.currentContext!).pop();
+  }
+}

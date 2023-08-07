@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mro/features/auth/presentation/bloc/password_reset/password_reset_cubit.dart';
-import 'package:mro/features/auth/presentation/bloc/password_reset/password_reset_state.dart';
 
 import '../../../../config/constants/color_constants.dart';
 import '../../../../config/constants/string_constants.dart';
 import '../../../widgets/my_custom_widget.dart';
+import '../bloc/password_reset/password_reset_cubit.dart';
+import '../bloc/password_reset/password_reset_state.dart';
 
 class PasswordResetScreen extends StatefulWidget {
   const PasswordResetScreen({super.key});

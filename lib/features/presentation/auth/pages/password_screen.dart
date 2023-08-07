@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mro/config/constants/app_constants.dart';
-import 'package:mro/features/auth/presentation/bloc/password/password_cubit.dart';
-import 'package:mro/features/auth/presentation/bloc/password/password_state.dart';
 
 import '../../../../config/constants/string_constants.dart';
 import '../../../widgets/my_custom_widget.dart';
+import '../bloc/password/password_cubit.dart';
+import '../bloc/password/password_state.dart';
 
 class PasswordScreen extends StatefulWidget {
   const PasswordScreen({super.key});

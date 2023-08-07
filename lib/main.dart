@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mro/config/constants/app_constants.dart';
-import 'package:mro/features/auth/presentation/bloc/login/login_cubit.dart';
-import 'package:mro/features/auth/presentation/bloc/password/password_cubit.dart';
-import 'package:mro/features/auth/presentation/bloc/password_reset/password_reset_cubit.dart';
-import 'package:mro/features/auth/presentation/pages/landing_screen.dart';
-import 'package:mro/features/auth/presentation/pages/login_screen.dart';
-import 'package:mro/features/auth/presentation/pages/password_reset_screen.dart';
-import 'package:mro/features/auth/presentation/pages/password_screen.dart';
-import 'package:mro/features/auth/presentation/pages/splash_screen.dart';
-import 'package:mro/features/home/presentation/pages/archive_screen.dart';
-import 'package:mro/features/home/presentation/pages/home_screen.dart';
-import 'package:mro/features/home/presentation/pages/my_approvals_screen.dart';
-import 'package:mro/features/home/presentation/pages/new_expenses_screen.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'features/home/presentation/pages/setting_screen.dart';
+
+import 'features/presentation/auth/bloc/login/login_cubit.dart';
+import 'features/presentation/auth/bloc/password/password_cubit.dart';
+import 'features/presentation/auth/bloc/password_reset/password_reset_cubit.dart';
+import 'features/presentation/auth/pages/landing_screen.dart';
+import 'features/presentation/auth/pages/login_screen.dart';
+import 'features/presentation/auth/pages/password_reset_screen.dart';
+import 'features/presentation/auth/pages/password_screen.dart';
+import 'features/presentation/auth/pages/splash_screen.dart';
+import 'features/presentation/home/pages/archive_screen.dart';
+import 'features/presentation/home/pages/home_screen.dart';
+import 'features/presentation/home/pages/my_approvals_screen.dart';
+import 'features/presentation/home/pages/new_expenses_screen.dart';
+import 'features/presentation/home/pages/setting_screen.dart';
 
 void main() {
   // Application works only in Portrait Mode by below mentioned code

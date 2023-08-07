@@ -10,4 +10,9 @@ class AppConstants {
   static const String routeArchive = "/archive";
   static const String routeMyApprovals = "/my_approvals";
   static const String routeSettings = "/settings";
+
+  // Common Messages
+  static const String mgsNoInternet = "Please check your internet connection.";
+  static const String msgConnectionTimeOut = "Connection timeout occurred";
+  static const String msgUnknownError = "Unknown error occurred";
 }

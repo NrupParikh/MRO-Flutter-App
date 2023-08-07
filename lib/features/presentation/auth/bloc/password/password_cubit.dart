@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:mro/config/constants/string_constants.dart';
-import 'package:mro/features/auth/presentation/bloc/password/password_state.dart';
+import 'package:mro/features/presentation/auth/bloc/password/password_state.dart';
 
 class PasswordCubit extends Cubit<PasswordState> {
   PasswordCubit() : super(PasswordInitialState());
