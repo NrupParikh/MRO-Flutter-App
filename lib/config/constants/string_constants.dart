@@ -38,4 +38,8 @@ class StringConstants {
   static const String otherOperatingSystem = "The device operating system is unsupported.";
   static const String passcodeNotSet = "The user has not yet configured a passcode (iOS) or PIN/pattern/password (Android) on the device.";
   static const String permanentlyLockedOut = "The API is locked out more persistently than [lockedOut]. Strong authentication like PIN/Pattern/Password is required to unlock.";
+
+  // ============ MESSAGES
+  static const String valMsgEnterUserName="Please enter User name";
+  static const String valMsgEnterPassword="Please enter Password";
 }
