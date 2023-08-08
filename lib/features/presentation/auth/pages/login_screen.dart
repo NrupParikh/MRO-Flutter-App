@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mro/features/domain/repository/mro_repository.dart';
 
 import '../../../../config/constants/app_constants.dart';
 import '../../../../config/constants/color_constants.dart';
 import '../../../../config/constants/string_constants.dart';
+import '../../../domain/repository/providers/mro_repository_provider.dart';
 import '../../../widgets/my_custom_widget.dart';
 import '../bloc/login/login_cubit.dart';
 import '../bloc/login/login_state.dart';
@@ -21,8 +21,6 @@ class LoginScreen extends StatefulWidget {
 // https://ppantaleon.medium.com/flutter-blocbuilder-vs-blocconsumer-vs-bloclistener-a4a3ce7bfa9a
 class _LoginScreenState extends State<LoginScreen> {
   TextEditingController userNameController = TextEditingController();
-
-  MroRepository mroRepository = MroRepository();
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +52,10 @@ class _LoginScreenState extends State<LoginScreen> {
         },
         builder: (context, state) {
           if (state is LogInInitialState) {
+            // Getting Access of Mro Repository singleton instance
+            final mroRepository =
+                MroRepositoryProvider.of(context)?.mroRepository;
+
             return SingleChildScrollView(
               child: Column(
                 children: [
@@ -82,8 +84,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   CustomElevatedButton(
                       buttonText: StringConstants.next.toUpperCase(),
-                      onPressed: () =>
-                          logInCubit.submitForm(userNameController.text),
+                      onPressed: () {
+                        if (mroRepository != null) {
+                          logInCubit.submitForm(
+                              userNameController.text, mroRepository);
+                        }
+                      },
                       buttonBgColor: ColorConstants.blueThemeColor),
                   const SizedBox(
                     height: 16,

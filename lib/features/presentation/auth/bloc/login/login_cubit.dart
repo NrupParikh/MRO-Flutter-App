@@ -4,19 +4,18 @@ import 'package:mro/config/constants/app_constants.dart';
 import 'package:mro/config/constants/string_constants.dart';
 
 import '../../../../data/models/user_schemas/user_schemas.dart';
-import '../../../../domain/repository/mro_repository.dart';
 import 'login_state.dart';
 
 class LogInCubit extends Cubit<LogInState> {
   LogInCubit() : super(LogInInitialState());
 
-  void submitForm(String userName) async {
+  void submitForm(String userName, mroRepository) async {
     if (userName.isEmpty) {
       emit(LogInFailureState(StringConstants.valMsgEnterUserName));
     } else {
       try {
-        MroRepository mroRepository = MroRepository();
         emit(LoadingState());
+        // Fetching Users Schema with use of Repository Instance
         UserSchemas data = await mroRepository.getUserSchema(userName);
         if (data.success == true) {
           emit(LogInSuccessState());
