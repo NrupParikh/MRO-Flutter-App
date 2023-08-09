@@ -7,6 +7,7 @@ import 'package:local_auth/local_auth.dart';
 import '../../../../config/constants/app_constants.dart';
 import '../../../../config/constants/color_constants.dart';
 import '../../../../config/constants/string_constants.dart';
+import '../../../../config/shared_preferences/provider/mro_shared_preference_provider.dart';
 import '../../../widgets/my_custom_widget.dart';
 
 class LandingScreen extends StatefulWidget {
@@ -59,40 +60,51 @@ class _LandingScreenState extends State<LandingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final pref = MroSharedPreferenceProvider.of(context)?.preference;
+    print("TAG_PREF_LANDING ${pref?.getBool(AppConstants.prefKeyIsLoggedIn)}");
     return Scaffold(
       body: Center(
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 50,
+          child: Stack(
+        children: [
+          const Align(
+            alignment: Alignment.topCenter,
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 48,
+                ),
+                ScanItLogoImage(),
+              ],
             ),
-            const ScanItLogoImage(),
-            const SizedBox(
-              height: 50,
-            ),
-            CustomElevatedButton(
-              buttonText: StringConstants.loginWithCredentials.toUpperCase(),
-              onPressed: () {
-                Navigator.pushNamed(context, AppConstants.routeLogin);
-              },
-              buttonBgColor: ColorConstants.blueThemeColor,
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            const Text("Or"),
-            const SizedBox(
-              height: 10,
-            ),
-            CustomElevatedButton(
-                buttonText: StringConstants.loginWithBioMetric.toUpperCase(),
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              CustomElevatedButton(
+                buttonText: StringConstants.loginWithCredentials.toUpperCase(),
                 onPressed: () {
-                  authenticate();
+                  Navigator.pushNamed(context, AppConstants.routeLogin);
                 },
-                buttonBgColor: ColorConstants.blueThemeColor)
-          ],
-        ),
-      ),
+                buttonBgColor: ColorConstants.blueThemeColor,
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              const Text("Or"),
+              const SizedBox(
+                height: 10,
+              ),
+              CustomElevatedButton(
+                  buttonText: StringConstants.loginWithBioMetric.toUpperCase(),
+                  onPressed: () {
+                    authenticate();
+                  },
+                  buttonBgColor: ColorConstants.blueThemeColor)
+            ],
+          ),
+        ],
+      )),
     );
   }
 }

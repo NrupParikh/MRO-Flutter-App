@@ -1,4 +1,5 @@
 class AppConstants {
+  static const int splashTimeOut = 2;
   // Routes
   static const String routeSplash = "/splash";
   static const String routeLanding = "/landing";
@@ -15,4 +16,10 @@ class AppConstants {
   static const String mgsNoInternet = "Please check your internet connection.";
   static const String msgConnectionTimeOut = "Connection timeout occurred";
   static const String msgUnknownError = "Unknown error occurred";
+
+  // Pref Key
+
+  static const String prefKeyIsLoggedIn = "isLoggedIn";
+  static const String prefKeyUserSchema = "userSchema";
+
 }

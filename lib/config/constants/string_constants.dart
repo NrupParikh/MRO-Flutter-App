@@ -10,6 +10,7 @@ class StringConstants {
   static const String next = "Next";
   static const String password = "Password";
   static const String login = "Login";
+  static const String selectSchema = "Select schema";
 
   static const String hintEnterUserName = "Enter User Name";
   static const String hintEnterPassword = "Enter Password";

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../config/constants/app_constants.dart';
 import '../../../../config/constants/color_constants.dart';
 import '../../../../config/constants/string_constants.dart';
+import '../../../../config/shared_preferences/provider/mro_shared_preference_provider.dart';
 import '../../../domain/repository/providers/mro_repository_provider.dart';
 import '../../../widgets/my_custom_widget.dart';
 import '../bloc/login/login_cubit.dart';
@@ -25,7 +26,8 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final LogInCubit logInCubit = context.read<LogInCubit>();
-
+    final pref = MroSharedPreferenceProvider.of(context)?.preference;
+    print("TAG_PREF_LOGIN ${pref?.getBool(AppConstants.prefKeyIsLoggedIn)}");
     return Scaffold(
         body: Center(
       child: BlocConsumer<LogInCubit, LogInState>(
@@ -60,11 +62,21 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 children: [
                   const SizedBox(
-                    height: 50,
+                    height: 48,
                   ),
                   const ScanItLogoImage(),
                   const SizedBox(
-                    height: 50,
+                    height: 48,
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 32, right: 32),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        StringConstants.userName,
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 32, right: 32),
@@ -73,21 +85,24 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: TextField(
                         controller: userNameController,
                         decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: StringConstants.userName,
-                            hintText: StringConstants.hintEnterUserName),
+                            enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black)),
+                            focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black)),
+                            hintText: StringConstants.hintEnterUserName,
+                            floatingLabelBehavior: FloatingLabelBehavior.never),
                       ),
                     ),
                   ),
                   const SizedBox(
-                    height: 16,
+                    height: 8,
                   ),
                   CustomElevatedButton(
                       buttonText: StringConstants.next.toUpperCase(),
                       onPressed: () {
                         if (mroRepository != null) {
                           logInCubit.submitForm(
-                              userNameController.text, mroRepository);
+                              userNameController.text, mroRepository, pref!);
                         }
                       },
                       buttonBgColor: ColorConstants.blueThemeColor),

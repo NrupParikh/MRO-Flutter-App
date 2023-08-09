@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../config/constants/app_constants.dart';
 import '../../../../config/constants/color_constants.dart';
 import '../../../../config/constants/string_constants.dart';
+import '../../../../config/shared_preferences/provider/mro_shared_preference_provider.dart';
 import '../../../widgets/my_custom_widget.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -17,6 +18,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final pref = MroSharedPreferenceProvider.of(context)?.preference;
+    print("TAG_PREF_SETTINGS ${pref?.getBool(AppConstants.prefKeyIsLoggedIn)}");
+
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -53,6 +57,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     alignment: Alignment.centerLeft,
                     child: GestureDetector(
                         onTap: () {
+                          // Clear preference data and set user login to false
+                          pref?.setBool(AppConstants.prefKeyIsLoggedIn, false);
+                          pref?.clear();
+
                           // Logout and navigate back to Landing Screen
                           Navigator.pushNamedAndRemoveUntil(context,
                               AppConstants.routeLanding, (route) => false);
