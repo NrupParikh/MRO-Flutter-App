@@ -7,7 +7,6 @@ import 'package:local_auth/local_auth.dart';
 import '../../../../config/constants/app_constants.dart';
 import '../../../../config/constants/color_constants.dart';
 import '../../../../config/constants/string_constants.dart';
-import '../../../../config/shared_preferences/provider/mro_shared_preference_provider.dart';
 import '../../../widgets/my_custom_widget.dart';
 
 class LandingScreen extends StatefulWidget {
@@ -60,8 +59,6 @@ class _LandingScreenState extends State<LandingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final pref = MroSharedPreferenceProvider.of(context)?.preference;
-    print("TAG_PREF_LANDING ${pref?.getBool(AppConstants.prefKeyIsLoggedIn)}");
     return Scaffold(
       body: Center(
           child: Stack(

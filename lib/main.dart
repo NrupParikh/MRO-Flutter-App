@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mro/config/connectivity_check/provider/connectivity_provider.dart';
 import 'package:mro/config/constants/app_constants.dart';
 import 'package:mro/config/shared_preferences/provider/mro_shared_preference_provider.dart';
+import 'package:provider/provider.dart';
 
 import 'config/shared_preferences/singleton/mro_shared_preference.dart';
 import 'features/domain/api/providers/api_provider.dart';
@@ -33,8 +35,11 @@ void main() async {
   MroSharedPreference preference = MroSharedPreference();
   await preference.init();
 
-  runApp(MyApp(
-    preference: preference,
+  runApp(ChangeNotifierProvider(
+    create: (context) => ConnectivityProvider(),
+    child: MyApp(
+      preference: preference,
+    ),
   ));
 }
 

@@ -12,17 +12,18 @@ import 'login_state.dart';
 class LogInCubit extends Cubit<LogInState> {
   LogInCubit() : super(LogInInitialState());
 
-  void submitForm(
-      String userName, mroRepository, MroSharedPreference pref) async {
+  void submitForm(String userName, mroRepository, MroSharedPreference pref,
+      bool isOnline) async {
     if (userName.isEmpty) {
       emit(LogInFailureState(StringConstants.valMsgEnterUserName));
+    } else if (!isOnline) {
+      emit(LogInFailureState(AppConstants.mgsNoInternet));
     } else {
       try {
         emit(LoadingState());
         // Fetching Users Schema with use of Repository Instance
         UserSchemas data = await mroRepository.getUserSchema(userName);
         if (data.success == true) {
-
           // Storing [User schema ] Tenant in shared preference
           pref.setString(AppConstants.prefKeyUserSchema, json.encode(data));
 

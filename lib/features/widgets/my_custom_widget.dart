@@ -1,4 +1,9 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../config/connectivity_check/provider/connectivity_provider.dart';
+import '../../config/constants/app_constants.dart';
 
 // ================ COMMON BUTTON WITH FULL WIDTH
 class CustomElevatedButton extends StatelessWidget {
@@ -98,4 +103,27 @@ void hideLoading(GlobalKey<State<StatefulWidget>> dialogKey) {
   if (dialogKey.currentContext != null) {
     Navigator.of(dialogKey.currentContext!).pop();
   }
+}
+
+// ========= Check Connectivity
+
+bool isOnline(BuildContext context) {
+  final connectivityProvider =
+      Provider.of<ConnectivityProvider>(context, listen: false);
+  final connectivityResult = connectivityProvider.connectivityResult;
+  if (connectivityResult == ConnectivityResult.none) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+// ========= No Internet Snack Bar
+void noInternetMessage(BuildContext context) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(
+      content: Text(AppConstants.mgsNoInternet),
+      duration: Duration(seconds: 2),
+    ),
+  );
 }

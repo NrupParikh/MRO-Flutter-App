@@ -102,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () {
                         if (mroRepository != null) {
                           logInCubit.submitForm(
-                              userNameController.text, mroRepository, pref!);
+                              userNameController.text, mroRepository, pref!,isOnline(context));
                         }
                       },
                       buttonBgColor: ColorConstants.blueThemeColor),
