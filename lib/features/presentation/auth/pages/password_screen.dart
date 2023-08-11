@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mro/config/constants/app_constants.dart';
@@ -9,11 +10,12 @@ import '../../../../config/constants/color_constants.dart';
 import '../../../../config/constants/string_constants.dart';
 import '../../../data/models/user_schemas/user_schemas.dart';
 import '../../../data/models/user_schemas/user_tenant_list.dart';
+import '../../../domain/repository/providers/mro_repository_provider.dart';
 import '../../../widgets/my_custom_widget.dart';
 import '../bloc/password/password_cubit.dart';
 import '../bloc/password/password_state.dart';
 
-//const List<UserTenantList> list = <String>['One', 'Two', 'Three', 'Four'];
+GlobalKey<State> _dialogKey = GlobalKey<State>();
 List<UserTenantList> list = <UserTenantList>[];
 
 class PasswordScreen extends StatefulWidget {
@@ -30,27 +32,40 @@ class _PasswordScreenState extends State<PasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final arguments = (ModalRoute.of(context)?.settings.arguments ??
+        <String, dynamic>{}) as Map;
+    var userName = arguments[AppConstants.keyArgUserName];
+
+    print("USER_NAME $userName");
+
     // Getting Access of Mro Repository singleton instance
     final pref = MroSharedPreferenceProvider.of(context)?.preference;
     print(
         "TAG_PREF_USER_SCHEMA ${pref?.getString(AppConstants.prefKeyUserSchema)}");
 
     final PasswordCubit passwordCubit = context.read<PasswordCubit>();
+
+    Connectivity connectivity = Connectivity();
     return Scaffold(
         body: Center(
       child: BlocConsumer<PasswordCubit, PasswordState>(
         listenWhen: (context, state) {
-          return state is PasswordSuccessState || state is PasswordFailureState;
+          return state is PasswordSuccessState ||
+              state is PasswordFailureState ||
+              state is LoadingState;
         },
         listener: (context, state) {
           if (state is PasswordSuccessState) {
             pref?.setBool(AppConstants.prefKeyIsLoggedIn, true);
-
+            hideLoading(_dialogKey);
             // Remove Auth Flow from Stack and Move to Home
             Navigator.pushNamedAndRemoveUntil(
                 context, AppConstants.routeHome, (route) => false);
           } else if (state is PasswordFailureState) {
+            hideLoading(_dialogKey);
             displayDialog(context, state.passwordErrorMessage);
+          } else if (state is LoadingState) {
+            showLoading(context, _dialogKey);
           }
         },
         buildWhen: (context, state) {
@@ -58,6 +73,8 @@ class _PasswordScreenState extends State<PasswordScreen> {
         },
         builder: (context, state) {
           if (state is PasswordInitialState) {
+            final mroRepository =
+                MroRepositoryProvider.of(context)?.mroRepository;
             /*
             * This flag check if item selected from DropDown then we don't re-call the pref values and
             re-set the dropdown value
@@ -169,11 +186,27 @@ class _PasswordScreenState extends State<PasswordScreen> {
                   ),
                   CustomElevatedButton(
                       buttonText: StringConstants.login.toUpperCase(),
-                      onPressed: () {
-                        var selectedSchema = dropdownValue.name.toString();
-                        print("SELECTED SCHEMA $selectedSchema");
-                        passwordCubit.submitForm(
-                            passwordController.text, selectedSchema);
+                      onPressed: () async {
+                        var schemaId = dropdownValue.id.toString();
+                        await connectivity.checkConnectivity().then((value) {
+                          if (value == ConnectivityResult.none) {
+                            passwordCubit.submitForm(
+                                userName,
+                                passwordController.text,
+                                schemaId,
+                                mroRepository,
+                                pref!,
+                                false);
+                          } else {
+                            passwordCubit.submitForm(
+                                userName,
+                                passwordController.text,
+                                schemaId,
+                                mroRepository,
+                                pref!,
+                                true);
+                          }
+                        });
                       },
                       buttonBgColor: ColorConstants.blueThemeColor),
                 ],

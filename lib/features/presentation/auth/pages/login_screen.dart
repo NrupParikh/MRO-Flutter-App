@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -28,6 +29,8 @@ class _LoginScreenState extends State<LoginScreen> {
     final LogInCubit logInCubit = context.read<LogInCubit>();
     final pref = MroSharedPreferenceProvider.of(context)?.preference;
     print("TAG_PREF_LOGIN ${pref?.getBool(AppConstants.prefKeyIsLoggedIn)}");
+
+    Connectivity connectivity = Connectivity();
     return Scaffold(
         body: Center(
       child: BlocConsumer<LogInCubit, LogInState>(
@@ -40,7 +43,11 @@ class _LoginScreenState extends State<LoginScreen> {
           if (state is LogInSuccessState) {
             // Must Hide Loading before success action performed
             hideLoading(_dialogKey);
-            Navigator.pushNamed(context, AppConstants.routePassword);
+            //https://stackoverflow.com/questions/53304340/navigator-pass-arguments-with-pushnamed
+            Navigator.pushNamed(context, AppConstants.routePassword,
+                arguments: {
+                  AppConstants.keyArgUserName: userNameController.text
+                });
           } else if (state is LogInFailureState) {
             // Must Hide Loading before failure action performed
             hideLoading(_dialogKey);
@@ -99,11 +106,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   CustomElevatedButton(
                       buttonText: StringConstants.next.toUpperCase(),
-                      onPressed: () {
-                        if (mroRepository != null) {
-                          logInCubit.submitForm(
-                              userNameController.text, mroRepository, pref!,isOnline(context));
-                        }
+                      onPressed: () async {
+                        await connectivity.checkConnectivity().then((value) {
+                          if (value == ConnectivityResult.none) {
+                            logInCubit.submitForm(userNameController.text,
+                                mroRepository, pref!, false);
+                          } else {
+                            logInCubit.submitForm(userNameController.text,
+                                mroRepository, pref!, true);
+                          }
+                        });
                       },
                       buttonBgColor: ColorConstants.blueThemeColor),
                   const SizedBox(

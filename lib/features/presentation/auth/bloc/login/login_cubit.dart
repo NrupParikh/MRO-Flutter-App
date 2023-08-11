@@ -6,6 +6,7 @@ import 'package:mro/config/constants/app_constants.dart';
 import 'package:mro/config/constants/string_constants.dart';
 import 'package:mro/config/shared_preferences/singleton/mro_shared_preference.dart';
 
+import '../../../../../config/exception_handling/api_error.dart';
 import '../../../../data/models/user_schemas/user_schemas.dart';
 import 'login_state.dart';
 
@@ -17,7 +18,7 @@ class LogInCubit extends Cubit<LogInState> {
     if (userName.isEmpty) {
       emit(LogInFailureState(StringConstants.valMsgEnterUserName));
     } else if (!isOnline) {
-      emit(LogInFailureState(AppConstants.mgsNoInternet));
+      emit(LogInFailureState(StringConstants.mgsNoInternet));
     } else {
       try {
         emit(LoadingState());
@@ -32,26 +33,8 @@ class LogInCubit extends Cubit<LogInState> {
           emit(LogInFailureState(data.message.toString()));
         }
       } on DioException catch (ex) {
-        print("Error : ${ex.response?.statusCode.toString()}");
-        handleException(ex);
+        emit(LogInFailureState(apiError(ex)));
       }
-    }
-  }
-
-  void handleException(DioException ex) {
-    if (ex.type == DioExceptionType.connectionError) {
-      emit(LogInFailureState(AppConstants.mgsNoInternet));
-    } else if (ex.type == DioExceptionType.connectionTimeout ||
-        ex.type == DioExceptionType.receiveTimeout) {
-      {
-        emit(LogInFailureState(AppConstants.msgConnectionTimeOut));
-      }
-    } else if (ex.type == DioExceptionType.unknown) {
-      {
-        emit(LogInFailureState(AppConstants.msgUnknownError));
-      }
-    } else {
-      emit(LogInFailureState(ex.type.toString()));
     }
   }
 }

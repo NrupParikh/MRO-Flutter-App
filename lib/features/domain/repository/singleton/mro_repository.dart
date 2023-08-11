@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
+import 'package:mro/features/data/models/sign_in/sign_in_response.dart';
 
 import '../../../../config/constants/api_constants.dart';
 import '../../../data/models/user_schemas/user_schemas.dart';
@@ -30,18 +33,22 @@ class MroRepository {
   }
 
   // ================ SIGN IN
-  Future<UserSchemas> signIn(
+  Future<SignInResponse> signIn(
       String userName, String password, String schemaId) async {
     try {
-      Map<String, dynamic> queryParams = {
-        APIConstants.userName: userName,
+      Map<String, dynamic> data = {
+        APIConstants.userName: "$userName|$schemaId",
         APIConstants.password: password
       };
 
-      Response response = await _api.sendRequest
-          .post(APIConstants.signIn, queryParameters: queryParams);
-      Map<String, dynamic> data = response.data;
-      return UserSchemas.fromJson(data);
+      var body = json.encode(data);
+
+      Response response =
+          await _api.sendRequest.post(APIConstants.signIn, data: body);
+      print("STATUS CODE ${response.statusCode}");
+      print("BODY ${response.data}");
+      Map<String, dynamic> responseData = response.data;
+      return SignInResponse.fromJson(responseData);
     } catch (ex) {
       rethrow;
     }

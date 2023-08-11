@@ -1,5 +1,7 @@
 abstract class PasswordState {}
 
+class LoadingState extends PasswordState {}
+
 class PasswordInitialState extends PasswordState {}
 
 class PasswordSuccessState extends PasswordState {}

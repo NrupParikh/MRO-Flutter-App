@@ -1,5 +1,7 @@
 class AppConstants {
+
   static const int splashTimeOut = 2;
+
   // Routes
   static const String routeSplash = "/splash";
   static const String routeLanding = "/landing";
@@ -12,14 +14,12 @@ class AppConstants {
   static const String routeMyApprovals = "/my_approvals";
   static const String routeSettings = "/settings";
 
-  // Common Messages
-  static const String mgsNoInternet = "Please check your internet connection.";
-  static const String msgConnectionTimeOut = "Connection timeout occurred";
-  static const String msgUnknownError = "Unknown error occurred";
-
   // Pref Key
-
   static const String prefKeyIsLoggedIn = "isLoggedIn";
   static const String prefKeyUserSchema = "userSchema";
+  static const String prefKeyLoginResponse = "loginResponse";
+
+  // Arguments
+  static const String keyArgUserName = "arg_user_name";
 
 }
