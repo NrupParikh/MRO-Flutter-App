@@ -55,7 +55,7 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                   Navigator.pushNamed(context, AppConstants.routePasswordResetSchemaSelection,
                       arguments: {AppConstants.keyArgUserName: userNameController.text});
                 } else {
-                  passwordResetCubit.callResetPasswordAPI(userNameController.text, tenantList.last.id.toString(), mroRepository);
+                  passwordResetCubit.callResetPasswordAPI(userNameController.text, tenantList.first.id.toString(), mroRepository);
                 }
               } else if (state is PasswordResetFinalSuccessState) {
                 hideLoading(_dialogKey);
