@@ -45,6 +45,11 @@ class _PasswordResetSchemaSelectionScreenState extends State<PasswordResetSchema
 
     Connectivity connectivity = Connectivity();
     return Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: const Text(StringConstants.passwordReset, style: TextStyle(color: Colors.white)),
+          backgroundColor: ColorConstants.blueThemeColor,
+        ),
         body: Center(
       child: BlocConsumer<PasswordResetSchemaSelectionCubit, PasswordResetSchemaSelectionState>(
         listenWhen: (context, state) {
