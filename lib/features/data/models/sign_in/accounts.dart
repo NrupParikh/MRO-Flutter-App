@@ -17,18 +17,18 @@ class Accounts {
 
   Accounts(
       {this.id,
-        this.version,
-        this.name,
-        this.active,
-        this.div,
-        this.dept,
-        this.account,
-        this.sub,
-        this.receiptVerifyRequired,
-        this.thresholdAmount,
-        this.receiptUploadRequired,
-        this.fields,
-        this.identifier});
+      this.version,
+      this.name,
+      this.active,
+      this.div,
+      this.dept,
+      this.account,
+      this.sub,
+      this.receiptVerifyRequired,
+      this.thresholdAmount,
+      this.receiptUploadRequired,
+      this.fields,
+      this.identifier});
 
   Accounts.fromJson(Map<String, dynamic> json) {
     id = json['id'];

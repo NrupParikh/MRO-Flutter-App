@@ -20,8 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: const Text(StringConstants.appFullName,
-              style: TextStyle(color: Colors.white)),
+          title: const Text(StringConstants.appFullName, style: TextStyle(color: Colors.white)),
           backgroundColor: ColorConstants.blueThemeColor,
           actions: [
             IconButton(
@@ -46,8 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
               },
               style: ElevatedButton.styleFrom(
                   backgroundColor: ColorConstants.homeScreenButtonBgColor,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0))),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0))),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -73,8 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
               },
               style: ElevatedButton.styleFrom(
                   backgroundColor: ColorConstants.homeScreenButtonBgColor,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0))),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0))),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -100,8 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
               },
               style: ElevatedButton.styleFrom(
                   backgroundColor: ColorConstants.homeScreenButtonBgColor,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0))),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0))),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -127,8 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
               },
               style: ElevatedButton.styleFrom(
                   backgroundColor: ColorConstants.homeScreenButtonBgColor,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0))),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0))),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

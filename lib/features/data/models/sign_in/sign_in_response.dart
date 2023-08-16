@@ -11,8 +11,7 @@ class SignInResponse {
   SignInResponse.fromJson(Map<String, dynamic> json) {
     isEmployee = json['isEmployee'];
     isApprover = json['isApprover'];
-    employee =
-        json['Employee'] != null ? Employee.fromJson(json['Employee']) : null;
+    employee = json['Employee'] != null ? Employee.fromJson(json['Employee']) : null;
     token = json['token'];
   }
 
@@ -27,21 +26,3 @@ class SignInResponse {
     return data;
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mro/config/constants/app_constants.dart';
 import 'package:mro/config/shared_preferences/provider/mro_shared_preference_provider.dart';
+import 'package:mro/features/presentation/auth/bloc/password_reset_schema_selection/password_reset_schema_selection_cubit.dart';
 
 import '../../../../config/constants/color_constants.dart';
 import '../../../../config/constants/string_constants.dart';
@@ -12,20 +13,19 @@ import '../../../data/models/user_schemas/user_schemas.dart';
 import '../../../data/models/user_schemas/user_tenant_list.dart';
 import '../../../domain/repository/providers/mro_repository_provider.dart';
 import '../../../widgets/my_custom_widget.dart';
-import '../bloc/password/password_cubit.dart';
-import '../bloc/password/password_state.dart';
+import '../bloc/password_reset_schema_selection/password_reset_schema_selection_state.dart';
 
 GlobalKey<State> _dialogKey = GlobalKey<State>();
 List<UserTenantList> list = <UserTenantList>[];
 
-class PasswordScreen extends StatefulWidget {
-  const PasswordScreen({super.key});
+class PasswordResetSchemaSelectionScreen extends StatefulWidget {
+  const PasswordResetSchemaSelectionScreen({super.key});
 
   @override
-  State<PasswordScreen> createState() => _PasswordScreenState();
+  State<PasswordResetSchemaSelectionScreen> createState() => _PasswordResetSchemaSelectionScreenState();
 }
 
-class _PasswordScreenState extends State<PasswordScreen> {
+class _PasswordResetSchemaSelectionScreenState extends State<PasswordResetSchemaSelectionScreen> {
   TextEditingController passwordController = TextEditingController();
   late UserTenantList dropdownValue;
   bool isDropDownSelected = false;
@@ -41,33 +41,33 @@ class _PasswordScreenState extends State<PasswordScreen> {
     final pref = MroSharedPreferenceProvider.of(context)?.preference;
     print("TAG_PREF_USER_SCHEMA ${pref?.getString(AppConstants.prefKeyUserSchema)}");
 
-    final PasswordCubit passwordCubit = context.read<PasswordCubit>();
+    final PasswordResetSchemaSelectionCubit passwordCubit = context.read<PasswordResetSchemaSelectionCubit>();
 
     Connectivity connectivity = Connectivity();
     return Scaffold(
         body: Center(
-      child: BlocConsumer<PasswordCubit, PasswordState>(
+      child: BlocConsumer<PasswordResetSchemaSelectionCubit, PasswordResetSchemaSelectionState>(
         listenWhen: (context, state) {
-          return state is PasswordSuccessState || state is PasswordFailureState || state is LoadingState;
+          return state is PasswordResetSchemaStateSuccessState ||
+              state is PasswordResetSchemaStateFailureState ||
+              state is LoadingState;
         },
         listener: (context, state) {
-          if (state is PasswordSuccessState) {
-            pref?.setBool(AppConstants.prefKeyIsLoggedIn, true);
+          if (state is PasswordResetSchemaStateSuccessState) {
             hideLoading(_dialogKey);
-            // Remove Auth Flow from Stack and Move to Home
-            Navigator.pushNamedAndRemoveUntil(context, AppConstants.routeHome, (route) => false);
-          } else if (state is PasswordFailureState) {
+            displayDialog(context, StringConstants.msgPasswordResetSuccess, true);
+          } else if (state is PasswordResetSchemaStateFailureState) {
             hideLoading(_dialogKey);
-            displayDialog(context, state.passwordErrorMessage);
+            displayDialog(context, state.passwordResetSchemaErrorMessage, false);
           } else if (state is LoadingState) {
             showLoading(context, _dialogKey);
           }
         },
         buildWhen: (context, state) {
-          return state is PasswordInitialState;
+          return state is PasswordResetSchemaStateInitialState;
         },
         builder: (context, state) {
-          if (state is PasswordInitialState) {
+          if (state is PasswordResetSchemaStateInitialState) {
             final mroRepository = MroRepositoryProvider.of(context)?.mroRepository;
             /*
             * This flag check if item selected from DropDown then we don't re-call the pref values and
@@ -101,29 +101,6 @@ class _PasswordScreenState extends State<PasswordScreen> {
                   const ScanItLogoImage(),
                   const SizedBox(
                     height: 48,
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 32, right: 32),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        StringConstants.password,
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 32, right: 32),
-                    child: TextField(
-                      style: const TextStyle(color: Colors.black),
-                      controller: passwordController,
-                      decoration: const InputDecoration(
-                        enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.black)),
-                        focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.black)),
-                        hintText: StringConstants.hintEnterPassword,
-                        floatingLabelBehavior: FloatingLabelBehavior.never,
-                      ),
-                    ),
                   ),
                   if (list.length > 1) ...[
                     const SizedBox(
@@ -175,14 +152,14 @@ class _PasswordScreenState extends State<PasswordScreen> {
                     height: 8,
                   ),
                   CustomElevatedButton(
-                      buttonText: StringConstants.login.toUpperCase(),
+                      buttonText: StringConstants.next.toUpperCase(),
                       onPressed: () async {
                         var schemaId = dropdownValue.id.toString();
                         await connectivity.checkConnectivity().then((value) {
                           if (value == ConnectivityResult.none) {
-                            passwordCubit.submitForm(userName, passwordController.text, schemaId, mroRepository, pref!, false);
+                            passwordCubit.submitForm(userName, schemaId, mroRepository, pref!, false);
                           } else {
-                            passwordCubit.submitForm(userName, passwordController.text, schemaId, mroRepository, pref!, true);
+                            passwordCubit.submitForm(userName, schemaId, mroRepository, pref!, true);
                           }
                         });
                       },
@@ -198,12 +175,17 @@ class _PasswordScreenState extends State<PasswordScreen> {
     ));
   }
 
-  void displayDialog(BuildContext context, String message) {
+  void displayDialog(BuildContext context, String message, bool isSuccess) {
     var dialog = MyCustomAlertDialog(
       title: StringConstants.appFullName,
       description: message,
       onOkButtonPressed: () {
-        Navigator.of(context, rootNavigator: true).pop();
+        if (isSuccess) {
+          // Dismiss dialog and go back screen
+          Navigator.popUntil(context, ModalRoute.withName(AppConstants.routeLogin) );
+        } else {
+          Navigator.of(context, rootNavigator: true).pop();
+        }
       },
       onCancelButtonPressed: () {},
       hasCancelButton: false,

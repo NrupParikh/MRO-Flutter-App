@@ -11,14 +11,12 @@ class NewExpensesScreen extends StatefulWidget {
 }
 
 class _NewExpensesScreenState extends State<NewExpensesScreen> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: const Text(StringConstants.newExpense,
-              style: TextStyle(color: Colors.white)),
+          title: const Text(StringConstants.newExpense, style: TextStyle(color: Colors.white)),
           backgroundColor: ColorConstants.blueThemeColor,
         ),
         body: const Center(child: Text("New Expenses")));

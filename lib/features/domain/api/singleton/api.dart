@@ -8,8 +8,7 @@ class API {
   factory API() => _instance;
 
   API._internal() {
-    _dio.options.baseUrl =
-        "https://staging-myreceipts.phxcloud.io/MROMobileApplication/api/";
+    _dio.options.baseUrl = "https://staging-myreceipts.phxcloud.io/MROMobileApplication/api/";
     _dio.interceptors.add(PrettyDioLogger());
     _dio.options.followRedirects = false;
   }

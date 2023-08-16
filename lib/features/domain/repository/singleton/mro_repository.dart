@@ -23,8 +23,7 @@ class MroRepository {
       // Future.delayed(const Duration(seconds: 3)); // Showing Loader for 3 seconds
       Map<String, dynamic> queryParams = {APIConstants.userName: userName};
 
-      Response response = await _api.sendRequest
-          .get(APIConstants.getUserSchema, queryParameters: queryParams);
+      Response response = await _api.sendRequest.get(APIConstants.getUserSchema, queryParameters: queryParams);
       Map<String, dynamic> data = response.data;
       return UserSchemas.fromJson(data);
     } catch (ex) {
@@ -33,22 +32,31 @@ class MroRepository {
   }
 
   // ================ SIGN IN
-  Future<SignInResponse> signIn(
-      String userName, String password, String schemaId) async {
+  Future<SignInResponse> signIn(String userNameWithSchemaId, String password) async {
     try {
-      Map<String, dynamic> data = {
-        APIConstants.userName: "$userName|$schemaId",
-        APIConstants.password: password
-      };
+      Map<String, dynamic> data = {APIConstants.userName: userNameWithSchemaId, APIConstants.password: password};
 
       var body = json.encode(data);
 
-      Response response =
-          await _api.sendRequest.post(APIConstants.signIn, data: body);
+      Response response = await _api.sendRequest.post(APIConstants.signIn, data: body);
       print("STATUS CODE ${response.statusCode}");
       print("BODY ${response.data}");
       Map<String, dynamic> responseData = response.data;
       return SignInResponse.fromJson(responseData);
+    } catch (ex) {
+      rethrow;
+    }
+  }
+
+  // ================ SIGN IN
+  Future<String> resetPassword(String userName, String tenantId) async {
+    try {
+      Map<String, dynamic> queryParams = {APIConstants.userName: userName, APIConstants.tenantId: tenantId};
+      Response response = await _api.sendRequest.get(APIConstants.resetPassword, queryParameters: queryParams);
+      print("STATUS CODE ${response.statusCode}");
+      print("BODY ${response.data}");
+      var data = response.data.toString();
+      return data;
     } catch (ex) {
       rethrow;
     }

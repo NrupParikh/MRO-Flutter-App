@@ -44,8 +44,7 @@ class _SampleScreenState extends State<SampleScreen> {
           ),
         ),
       ),
-      floatingActionButton:
-          Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+      floatingActionButton: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
         FloatingActionButton(
           onPressed: () {
             // _counter++;

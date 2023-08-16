@@ -10,15 +10,7 @@ class Currency {
   String? currencyFormat;
   Country? country;
 
-  Currency(
-      {this.id,
-        this.version,
-        this.name,
-        this.iso,
-        this.prefix,
-        this.postfix,
-        this.currencyFormat,
-        this.country});
+  Currency({this.id, this.version, this.name, this.iso, this.prefix, this.postfix, this.currencyFormat, this.country});
 
   Currency.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -28,8 +20,7 @@ class Currency {
     prefix = json['prefix'];
     postfix = json['postfix'];
     currencyFormat = json['currencyFormat'];
-    country =
-    json['country'] != null ? Country.fromJson(json['country']) : null;
+    country = json['country'] != null ? Country.fromJson(json['country']) : null;
   }
 
   Map<String, dynamic> toJson() {

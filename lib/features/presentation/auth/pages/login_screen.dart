@@ -35,9 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
         body: Center(
       child: BlocConsumer<LogInCubit, LogInState>(
         listenWhen: (context, state) {
-          return state is LogInSuccessState ||
-              state is LogInFailureState ||
-              state is LoadingState;
+          return state is LogInSuccessState || state is LogInFailureState || state is LoadingState;
         },
         listener: (context, state) {
           if (state is LogInSuccessState) {
@@ -45,9 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
             hideLoading(_dialogKey);
             //https://stackoverflow.com/questions/53304340/navigator-pass-arguments-with-pushnamed
             Navigator.pushNamed(context, AppConstants.routePassword,
-                arguments: {
-                  AppConstants.keyArgUserName: userNameController.text
-                });
+                arguments: {AppConstants.keyArgUserName: userNameController.text});
           } else if (state is LogInFailureState) {
             // Must Hide Loading before failure action performed
             hideLoading(_dialogKey);
@@ -62,8 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
         builder: (context, state) {
           if (state is LogInInitialState) {
             // Getting Access of Mro Repository singleton instance
-            final mroRepository =
-                MroRepositoryProvider.of(context)?.mroRepository;
+            final mroRepository = MroRepositoryProvider.of(context)?.mroRepository;
 
             return SingleChildScrollView(
               child: Column(
@@ -92,10 +87,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: TextField(
                         controller: userNameController,
                         decoration: const InputDecoration(
-                            enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black)),
-                            focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black)),
+                            enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.black)),
+                            focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.black)),
                             hintText: StringConstants.hintEnterUserName,
                             floatingLabelBehavior: FloatingLabelBehavior.never),
                       ),
@@ -109,11 +102,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () async {
                         await connectivity.checkConnectivity().then((value) {
                           if (value == ConnectivityResult.none) {
-                            logInCubit.submitForm(userNameController.text,
-                                mroRepository, pref!, false);
+                            logInCubit.submitForm(userNameController.text, mroRepository, pref!, false);
                           } else {
-                            logInCubit.submitForm(userNameController.text,
-                                mroRepository, pref!, true);
+                            logInCubit.submitForm(userNameController.text, mroRepository, pref!, true);
                           }
                         });
                       },
@@ -126,8 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: CustomElevatedButton(
                         buttonText: StringConstants.passwordReset.toUpperCase(),
                         onPressed: () {
-                          Navigator.pushNamed(
-                              context, AppConstants.routePasswordReset);
+                          Navigator.pushNamed(context, AppConstants.routePasswordReset);
                         },
                         buttonBgColor: Colors.red),
                   ),
@@ -149,6 +139,8 @@ class _LoginScreenState extends State<LoginScreen> {
       onOkButtonPressed: () {
         Navigator.of(context, rootNavigator: true).pop();
       },
+      onCancelButtonPressed: () {},
+      hasCancelButton: false,
     );
 
     showDialog(context: context, builder: (BuildContext context) => dialog);

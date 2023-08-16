@@ -54,4 +54,10 @@ class MroSharedPreference {
   bool getBool(String key, {bool defaultValue = false}) {
     return _prefs.getBool(key) ?? defaultValue;
   }
+
+
+  // Get Keys
+  Set<String> getKeys() {
+    return _prefs.getKeys();
+  }
 }

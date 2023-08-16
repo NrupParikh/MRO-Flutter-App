@@ -59,4 +59,6 @@ class StringConstants {
   static const String mgsNoInternet = "Please check your internet connection.";
   static const String msgConnectionTimeOut = "Connection timeout occurred";
   static const String msgUnknownError = "Unknown error occurred";
+  static const String msgLogoutConfirmation =
+      "Are you sure you want to Log Out of MRO?";
 }

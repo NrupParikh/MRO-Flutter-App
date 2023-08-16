@@ -7,6 +7,7 @@ import 'package:local_auth/local_auth.dart';
 import '../../../../config/constants/app_constants.dart';
 import '../../../../config/constants/color_constants.dart';
 import '../../../../config/constants/string_constants.dart';
+import '../../../../config/shared_preferences/provider/mro_shared_preference_provider.dart';
 import '../../../widgets/my_custom_widget.dart';
 
 class LandingScreen extends StatefulWidget {
@@ -30,13 +31,10 @@ class _LandingScreenState extends State<LandingScreen> {
   Future<void> authenticate() async {
     try {
       final bool didAuthenticate = await auth.authenticate(
-          localizedReason: "Please authenticate",
-          options: const AuthenticationOptions(
-              stickyAuth: true, biometricOnly: true));
+          localizedReason: "Please authenticate", options: const AuthenticationOptions(stickyAuth: true, biometricOnly: true));
       if (didAuthenticate == true) {
         if (!mounted) return;
-        Navigator.pushNamedAndRemoveUntil(
-            context, AppConstants.routeHome, (route) => false);
+        Navigator.pushNamedAndRemoveUntil(context, AppConstants.routeHome, (route) => false);
       }
     } on PlatformException catch (e) {
       if (e.code == auth_error.notEnrolled) {
@@ -59,6 +57,9 @@ class _LandingScreenState extends State<LandingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final pref = MroSharedPreferenceProvider.of(context)?.preference;
+    var isBiometricEnabled = pref?.getBool(AppConstants.prefKeyIsBiometricEnabled);
+
     return Scaffold(
       body: Center(
           child: Stack(
@@ -85,19 +86,21 @@ class _LandingScreenState extends State<LandingScreen> {
                 },
                 buttonBgColor: ColorConstants.blueThemeColor,
               ),
-              const SizedBox(
-                height: 10,
-              ),
-              const Text("Or"),
-              const SizedBox(
-                height: 10,
-              ),
-              CustomElevatedButton(
-                  buttonText: StringConstants.loginWithBioMetric.toUpperCase(),
-                  onPressed: () {
-                    authenticate();
-                  },
-                  buttonBgColor: ColorConstants.blueThemeColor)
+              if (isBiometricEnabled == true) ...[
+                const SizedBox(
+                  height: 10,
+                ),
+                const Text("Or"),
+                const SizedBox(
+                  height: 10,
+                ),
+                CustomElevatedButton(
+                    buttonText: StringConstants.loginWithBioMetric.toUpperCase(),
+                    onPressed: () {
+                      authenticate();
+                    },
+                    buttonBgColor: ColorConstants.blueThemeColor)
+              ]
             ],
           ),
         ],

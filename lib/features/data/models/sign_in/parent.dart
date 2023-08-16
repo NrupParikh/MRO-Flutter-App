@@ -22,20 +22,20 @@ class Parent {
 
   Parent(
       {this.id,
-        this.version,
-        this.name,
-        this.externalIdentifier,
-        this.abbreviation,
-        this.attributes,
-        this.shortDescription,
-        this.parent,
-        this.organizationType,
-        this.active,
-        this.accounts,
-        this.activatePrimaryVAT,
-        this.activateSecondaryVAT,
-        this.currency,
-        this.substituteSubValue});
+      this.version,
+      this.name,
+      this.externalIdentifier,
+      this.abbreviation,
+      this.attributes,
+      this.shortDescription,
+      this.parent,
+      this.organizationType,
+      this.active,
+      this.accounts,
+      this.activatePrimaryVAT,
+      this.activateSecondaryVAT,
+      this.currency,
+      this.substituteSubValue});
 
   Parent.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -51,9 +51,7 @@ class Parent {
     }
     shortDescription = json['shortDescription'];
     parent = json['parent'];
-    organizationType = json['organizationType'] != null
-        ? OrganizationType.fromJson(json['organizationType'])
-        : null;
+    organizationType = json['organizationType'] != null ? OrganizationType.fromJson(json['organizationType']) : null;
     active = json['active'];
     if (json['accounts'] != null) {
       accounts = <Accounts>[];
@@ -63,8 +61,7 @@ class Parent {
     }
     activatePrimaryVAT = json['activatePrimaryVAT'];
     activateSecondaryVAT = json['activateSecondaryVAT'];
-    currency =
-    json['currency'] != null ? Currency.fromJson(json['currency']) : null;
+    currency = json['currency'] != null ? Currency.fromJson(json['currency']) : null;
     substituteSubValue = json['substituteSubValue'];
   }
 

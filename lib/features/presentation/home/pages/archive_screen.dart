@@ -30,15 +30,13 @@ class _ArchiveScreenState extends State<ArchiveScreen> {
           final TabController tabController = DefaultTabController.of(context);
           tabController.addListener(() {
             if (!tabController.indexIsChanging) {
-              Fluttertoast.showToast(
-                  msg: "${tabs[tabController.index].text} is selected");
+              Fluttertoast.showToast(msg: "${tabs[tabController.index].text} is selected");
             }
           });
           return Scaffold(
             appBar: AppBar(
               automaticallyImplyLeading: false,
-              title: const Text(StringConstants.archive,
-                  style: TextStyle(color: Colors.white)),
+              title: const Text(StringConstants.archive, style: TextStyle(color: Colors.white)),
               backgroundColor: ColorConstants.blueThemeColor,
               actions: [
                 TextButton(

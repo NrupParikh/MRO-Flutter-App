@@ -7,14 +7,7 @@ class Fields {
   bool? uppercase;
   int? maxLength;
 
-  Fields(
-      {this.id,
-        this.version,
-        this.label,
-        this.required,
-        this.sequence,
-        this.uppercase,
-        this.maxLength});
+  Fields({this.id, this.version, this.label, this.required, this.sequence, this.uppercase, this.maxLength});
 
   Fields.fromJson(Map<String, dynamic> json) {
     id = json['id'];

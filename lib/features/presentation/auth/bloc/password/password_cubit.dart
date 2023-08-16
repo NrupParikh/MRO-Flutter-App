@@ -13,8 +13,8 @@ import '../../../../data/models/sign_in/sign_in_response.dart';
 class PasswordCubit extends Cubit<PasswordState> {
   PasswordCubit() : super(PasswordInitialState());
 
-  void submitForm(String userName, String password, String schemaId,
-      mroRepository, MroSharedPreference pref, bool isOnline) async {
+  void submitForm(
+      String userName, String password, String schemaId, mroRepository, MroSharedPreference pref, bool isOnline) async {
     if (password.isEmpty) {
       emit(PasswordFailureState(StringConstants.valMsgEnterPassword));
     } else if (!isOnline) {
@@ -22,10 +22,12 @@ class PasswordCubit extends Cubit<PasswordState> {
     } else {
       try {
         emit(LoadingState());
-        SignInResponse data =
-            await mroRepository.signIn(userName, password, schemaId);
+        var userNameWithSchemaId = "$userName|$schemaId";
+        SignInResponse data = await mroRepository.signIn("$userName|$schemaId", password);
         // Storing [User schema ] Tenant in shared preference
         pref.setString(AppConstants.prefKeyLoginResponse, json.encode(data));
+        pref.setString(AppConstants.prefKeyUserNameWithSchemaId, userNameWithSchemaId);
+        pref.setString(AppConstants.prefKeyPassword, password);
         emit(PasswordSuccessState());
       } on DioException catch (ex) {
         emit(PasswordFailureState(apiError(ex)));

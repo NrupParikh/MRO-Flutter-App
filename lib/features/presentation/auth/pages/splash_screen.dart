@@ -49,9 +49,7 @@ class _SplashScreenState extends State<SplashScreen> {
               Image.asset("assets/images/img_splash.png"),
               const Padding(
                 padding: EdgeInsets.only(bottom: 16),
-                child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: ScanItLogoImage()),
+                child: Align(alignment: Alignment.bottomCenter, child: ScanItLogoImage()),
               ),
             ],
           ),

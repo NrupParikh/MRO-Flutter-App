@@ -11,14 +11,12 @@ class MyApprovalsScreen extends StatefulWidget {
 }
 
 class _MyApprovalsScreenState extends State<MyApprovalsScreen> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: const Text(StringConstants.myApproval,
-              style: TextStyle(color: Colors.white)),
+          title: const Text(StringConstants.myApproval, style: TextStyle(color: Colors.white)),
           backgroundColor: ColorConstants.blueThemeColor,
         ),
         body: const Center(child: Text("My Approvals")));

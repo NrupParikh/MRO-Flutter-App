@@ -13,8 +13,7 @@ import 'login_state.dart';
 class LogInCubit extends Cubit<LogInState> {
   LogInCubit() : super(LogInInitialState());
 
-  void submitForm(String userName, mroRepository, MroSharedPreference pref,
-      bool isOnline) async {
+  void submitForm(String userName, mroRepository, MroSharedPreference pref, bool isOnline) async {
     if (userName.isEmpty) {
       emit(LogInFailureState(StringConstants.valMsgEnterUserName));
     } else if (!isOnline) {

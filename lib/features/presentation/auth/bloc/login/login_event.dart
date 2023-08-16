@@ -1,5 +1,3 @@
-
-
 abstract class LogInEvent {}
 
 class LogInSubmitFormEvent extends LogInEvent {
