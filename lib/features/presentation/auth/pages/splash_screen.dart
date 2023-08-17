@@ -22,19 +22,17 @@ class _SplashScreenState extends State<SplashScreen> {
     // Set 3 second timer for Splash Screen
     Timer(const Duration(seconds: AppConstants.splashTimeOut), () {
       final pref = MroSharedPreferenceProvider.of(context)?.preference;
-      print("TAG_PREF_SPLASH ${pref?.getBool(AppConstants.prefKeyIsLoggedIn)}");
-      print("TAG_USER_SCHEMA ${pref?.getString(AppConstants.prefKeyUserSchema)}");
-
       var isLogin = pref?.getBool(AppConstants.prefKeyIsLoggedIn);
       if (isLogin == true) {
-        // Navigate To Main Screen
         Navigator.pushReplacementNamed(context, AppConstants.routeHome);
       } else {
-        // Navigate To Main Screen
-        Navigator.pushReplacementNamed(context, AppConstants.routeLanding);
+        var isBioMetric = pref!.getBool(AppConstants.prefKeyIsBiometricEnabled);
+        if (isBioMetric) {
+          Navigator.pushReplacementNamed(context, AppConstants.routeLanding);
+        } else {
+          Navigator.pushReplacementNamed(context, AppConstants.routeLogin);
+        }
       }
-
-      // Navigator.pushNamedAndRemoveUntil(context, AppConstants.routeLanding, (route) => false);
     });
   }
 

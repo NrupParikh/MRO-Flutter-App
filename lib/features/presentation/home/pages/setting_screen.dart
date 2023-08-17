@@ -77,7 +77,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   // ====================== LOGOUT
   void performLogout(MroSharedPreference pref, BuildContext context) {
-
     var isBiometricEnabled = pref.getBool(AppConstants.prefKeyIsBiometricEnabled);
 
     if (isBiometricEnabled == true) {
@@ -87,12 +86,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
       pref.setString(AppConstants.prefKeyUserNameWithSchemaId, userName);
       pref.setString(AppConstants.prefKeyPassword, password);
       pref.setBool(AppConstants.prefKeyIsBiometricEnabled, true);
+      Navigator.pushNamedAndRemoveUntil(context, AppConstants.routeLanding, (route) => false);
     } else {
       pref.clear();
       pref.setBool(AppConstants.prefKeyIsBiometricEnabled, false);
+      Navigator.pushNamedAndRemoveUntil(context, AppConstants.routeLogin, (route) => false);
     }
     // Logout and navigate back to Landing Screen
-    Navigator.pushNamedAndRemoveUntil(context, AppConstants.routeLanding, (route) => false);
   }
 
   // ================ SHOW OK DIALOG

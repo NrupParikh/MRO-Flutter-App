@@ -7,11 +7,11 @@ class Parent {
   int? id;
   int? version;
   String? name;
-  Null? externalIdentifier;
+  String? externalIdentifier;
   String? abbreviation;
   List<Attributes>? attributes;
   String? shortDescription;
-  Null? parent;
+  Object? parent;
   OrganizationType? organizationType;
   int? active;
   List<Accounts>? accounts;
@@ -76,7 +76,7 @@ class Parent {
       data['attributes'] = attributes!.map((v) => v.toJson()).toList();
     }
     data['shortDescription'] = shortDescription;
-    data['parent'] = parent;
+    //data['parent'] = parent;
     if (organizationType != null) {
       data['organizationType'] = organizationType!.toJson();
     }
