@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mro/config/constants/app_constants.dart';
 import 'package:mro/config/shared_preferences/provider/mro_shared_preference_provider.dart';
+import 'package:mro/features/presentation/auth/bloc/biometric_auth/biometric_auth_cubit.dart';
 import 'package:mro/features/presentation/auth/bloc/password_reset_schema_selection/password_reset_schema_selection_cubit.dart';
 import 'package:mro/features/presentation/auth/pages/password_reset_schema_selection_screen.dart';
 
@@ -67,14 +68,15 @@ class MyApp extends StatelessWidget {
             initialRoute: AppConstants.routeSplash,
             routes: {
               AppConstants.routeSplash: (context) => const SplashScreen(),
-              AppConstants.routeLanding: (context) => const LandingScreen(),
+              AppConstants.routeLanding: (context) =>
+                  BlocProvider(create: (context) => BiometricAuthCubit(), child: const LandingScreen()),
               AppConstants.routeLogin: (context) => BlocProvider(create: (context) => LogInCubit(), child: const LoginScreen()),
               AppConstants.routePassword: (context) =>
                   BlocProvider(create: (context) => PasswordCubit(), child: const PasswordScreen()),
               AppConstants.routePasswordReset: (context) =>
                   BlocProvider(create: (context) => PasswordResetCubit(), child: const PasswordResetScreen()),
-              AppConstants.routePasswordResetSchemaSelection: (context) =>
-                  BlocProvider(create: (context) => PasswordResetSchemaSelectionCubit(), child: const PasswordResetSchemaSelectionScreen()),
+              AppConstants.routePasswordResetSchemaSelection: (context) => BlocProvider(
+                  create: (context) => PasswordResetSchemaSelectionCubit(), child: const PasswordResetSchemaSelectionScreen()),
               AppConstants.routeHome: (context) => const HomeScreen(),
               AppConstants.routeNewExpenses: (context) => const NewExpensesScreen(),
               AppConstants.routeArchive: (context) => const ArchiveScreen(),

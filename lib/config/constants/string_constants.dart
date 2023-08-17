@@ -23,6 +23,7 @@ class StringConstants {
   static const String logout = "Logout";
   static const String syncMessage = "Sync MRO";
   static const String modify = "Modify";
+  static const String or = "Or";
 
   // =========== TAB
   static const String tabDraft = "Draft";
