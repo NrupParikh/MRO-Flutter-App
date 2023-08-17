@@ -56,19 +56,93 @@ class _ArchiveScreenState extends State<ArchiveScreen> {
                 indicatorColor: Colors.white,
               ),
             ),
-            body: TabBarView(
-              children: tabs.map((Tab tab) {
-                return Center(
-                  child: ListView.builder(
-                    itemCount: 50,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text("Item $index"),
-                      );
-                    },
-                  ),
-                );
-              }).toList(),
+            body: Container(
+              color: ColorConstants.gray200,
+              child: TabBarView(
+                children: tabs.map((Tab tab) {
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ListView.builder(
+                        itemCount: 50,
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            onTap: () {
+                              Fluttertoast.showToast(msg: "You click item at $index");
+                            },
+                            child: Card(
+                              elevation: 1,
+                              color: Colors.white,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(children: [
+                                  // ======= 1st and 2nd Row
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Expanded(
+                                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                          Row(children: [
+                                            Text(
+                                              "2023-08-03",
+                                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 14),
+                                            ),
+                                            SizedBox(
+                                              width: 8.0,
+                                            ),
+                                            Text(
+                                              "USD 5346.00",
+                                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 14),
+                                            )
+                                          ]),
+                                          Text("TEST2",
+                                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 14)),
+                                        ]),
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          Fluttertoast.showToast(msg: "See attachment at $index");
+                                        },
+                                        child: const Icon(
+                                          Icons.attach_file,
+                                          color: Colors.black,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  // ========== Third Line
+                                  Column(
+                                    children: [
+                                      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                                        const Row(children: [
+                                          Text("Status:",
+                                              style: TextStyle(fontWeight: FontWeight.normal, color: Colors.black, fontSize: 14)),
+                                          Text("Waiting for approval",
+                                              style: TextStyle(fontWeight: FontWeight.normal, color: Colors.black, fontSize: 14))
+                                        ]),
+                                        InkWell(
+                                          onTap: () {
+                                            Fluttertoast.showToast(msg: "See visibility at $index");
+                                          },
+                                          child: const Icon(
+                                            Icons.visibility,
+                                            color: Colors.black,
+                                          ),
+                                        )
+                                      ]),
+                                    ],
+                                  ),
+                                ]),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
             ),
           );
         },

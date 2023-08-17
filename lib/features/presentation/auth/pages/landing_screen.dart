@@ -59,8 +59,6 @@ class _LandingScreenState extends State<LandingScreen> {
             biometricAuthCubit.submitForm(userName, password, schemaId, mroRepository, pref, true);
           }
         });
-
-        //Navigator.pushNamedAndRemoveUntil(context, AppConstants.routeHome, (route) => false);
       }
     } on PlatformException catch (e) {
       if (e.code == auth_error.notEnrolled) {
