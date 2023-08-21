@@ -28,7 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     final LogInCubit logInCubit = context.read<LogInCubit>();
     final pref = MroSharedPreferenceProvider.of(context)?.preference;
-    print("TAG_PREF_LOGIN ${pref?.getBool(AppConstants.prefKeyIsLoggedIn)}");
+    debugPrint("TAG_PREF_LOGIN ${pref?.getBool(AppConstants.prefKeyIsLoggedIn)}");
 
     Connectivity connectivity = Connectivity();
     return Scaffold(
@@ -102,9 +102,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () async {
                         await connectivity.checkConnectivity().then((value) {
                           if (value == ConnectivityResult.none) {
-                            logInCubit.submitForm(userNameController.text, mroRepository, pref!, false);
+                            logInCubit.submitForm(userNameController.text, mroRepository!, pref!, false);
                           } else {
-                            logInCubit.submitForm(userNameController.text, mroRepository, pref!, true);
+                            logInCubit.submitForm(userNameController.text, mroRepository!, pref!, true);
                           }
                         });
                       },

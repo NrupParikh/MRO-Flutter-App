@@ -18,6 +18,7 @@ class AppConstants {
   static const String routeSettings = "/settings";
 
   // Pref Key
+  static const String prefKeyToken = "token";
   static const String prefKeyIsLoggedIn = "isLoggedIn";
   static const String prefKeyUserNameWithSchemaId = "userNameWithSchemaId";
   static const String prefKeyPassword = "password";

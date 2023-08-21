@@ -35,11 +35,11 @@ class _PasswordScreenState extends State<PasswordScreen> {
     final arguments = (ModalRoute.of(context)?.settings.arguments ?? <String, dynamic>{}) as Map;
     var userName = arguments[AppConstants.keyArgUserName];
 
-    print("USER_NAME $userName");
+    debugPrint("USER_NAME $userName");
 
     // Getting Access of Mro Repository singleton instance
     final pref = MroSharedPreferenceProvider.of(context)?.preference;
-    print("TAG_PREF_USER_SCHEMA ${pref?.getString(AppConstants.prefKeyUserSchema)}");
+    debugPrint("TAG_PREF_USER_SCHEMA ${pref?.getString(AppConstants.prefKeyUserSchema)}");
 
     final PasswordCubit passwordCubit = context.read<PasswordCubit>();
 
@@ -82,8 +82,8 @@ class _PasswordScreenState extends State<PasswordScreen> {
                   List<UserTenantList>? userTenantList = userSchemas.userTenantList;
                   list.clear();
                   for (int i = 0; i < userTenantList!.length; i++) {
-                    print("TAG_Tenant_Schema ${userTenantList[i].schemaName}");
-                    print("TAG_Tenant_Name ${userTenantList[i].name}");
+                    debugPrint("TAG_Tenant_Schema ${userTenantList[i].schemaName}");
+                    debugPrint("TAG_Tenant_Name ${userTenantList[i].name}");
                     list.add(userTenantList[i]);
                   }
                   dropdownValue = list.first;

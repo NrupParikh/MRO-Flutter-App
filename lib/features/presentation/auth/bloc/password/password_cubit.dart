@@ -1,14 +1,11 @@
-import 'dart:convert';
-
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:mro/config/constants/string_constants.dart';
 import 'package:mro/features/presentation/auth/bloc/password/password_state.dart';
 
-import '../../../../../config/constants/app_constants.dart';
 import '../../../../../config/exception_handling/api_error.dart';
 import '../../../../../config/shared_preferences/singleton/mro_shared_preference.dart';
-import '../../../../data/models/sign_in/sign_in_response.dart';
+import '../../store_login_info.dart';
 
 class PasswordCubit extends Cubit<PasswordState> {
   PasswordCubit() : super(PasswordInitialState());
@@ -22,12 +19,7 @@ class PasswordCubit extends Cubit<PasswordState> {
     } else {
       try {
         emit(LoadingState());
-        var userNameWithSchemaId = "$userName|$schemaId";
-        SignInResponse data = await mroRepository.signIn("$userName|$schemaId", password);
-        // Storing [User schema ] Tenant in shared preference
-        pref.setString(AppConstants.prefKeyLoginResponse, json.encode(data));
-        pref.setString(AppConstants.prefKeyUserNameWithSchemaId, userNameWithSchemaId);
-        pref.setString(AppConstants.prefKeyPassword, password);
+        await storeLoginResponse(userName, schemaId, mroRepository, password, pref);
         emit(PasswordSuccessState());
       } on DioException catch (ex) {
         emit(PasswordFailureState(apiError(ex)));

@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:mro/config/constants/app_constants.dart';
 import 'package:mro/config/constants/string_constants.dart';
+import 'package:mro/features/domain/repository/singleton/mro_repository.dart';
 import 'package:mro/features/presentation/auth/bloc/password_reset/password_reset_state.dart';
 
 import '../../../../../config/exception_handling/api_error.dart';
@@ -14,9 +15,7 @@ import '../../../../data/models/user_schemas/user_tenant_list.dart';
 class PasswordResetCubit extends Cubit<PasswordResetState> {
   PasswordResetCubit() : super(PasswordResetInitialState());
 
-  void getUserSchema() {}
-
-  void submitForm(String userName, mroRepository, MroSharedPreference pref, bool isOnline) async {
+  void submitForm(String userName, MroRepository mroRepository, MroSharedPreference pref, bool isOnline) async {
     if (userName.isEmpty) {
       emit(PasswordResetFailureState(StringConstants.valMsgEnterUserName));
     } else if (!isOnline) {
@@ -50,7 +49,7 @@ class PasswordResetCubit extends Cubit<PasswordResetState> {
     }
   }
 
-  void callResetPasswordAPI(String userName, String tenantId,mroRepository) async {
+  void callResetPasswordAPI(String userName, String tenantId,MroRepository mroRepository) async {
     try {
       emit(LoadingState());
       String data = await mroRepository.resetPassword(userName,tenantId);

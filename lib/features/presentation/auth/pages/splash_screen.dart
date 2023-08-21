@@ -15,10 +15,10 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    launchSplashScreen();
+    goToNextScreen();
   }
 
-  void launchSplashScreen() {
+  void goToNextScreen() {
     // Set 3 second timer for Splash Screen
     Timer(const Duration(seconds: AppConstants.splashTimeOut), () {
       final pref = MroSharedPreferenceProvider.of(context)?.preference;

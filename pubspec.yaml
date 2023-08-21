@@ -46,6 +46,8 @@ dependencies:
   email_validator: ^2.1.17
   connectivity_plus: ^4.0.2
   provider: ^6.0.5
+  floor: ^1.4.2
+  equatable: ^2.0.5
 
 dev_dependencies:
   flutter_test:
@@ -57,6 +59,9 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+  floor_generator: ^1.4.2
+  build_runner: ^2.4.6
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -53,10 +53,6 @@ class StringConstants {
   static const String valMsgEnterPassword = "Please enter Password";
 
   // ============ common
-  static const String msgNoInternetConnectivity =
-      "Please check your connection";
-
-  // Common Messages
   static const String mgsNoInternet = "Please check your internet connection.";
   static const String msgConnectionTimeOut = "Connection timeout occurred";
   static const String msgUnknownError = "Unknown error occurred";

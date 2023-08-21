@@ -16,7 +16,7 @@ class _SampleScreenState extends State<SampleScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("---- Widget Tree ----");
+    debugPrint("---- Widget Tree ----");
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,

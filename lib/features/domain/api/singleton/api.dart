@@ -9,7 +9,7 @@ class API {
 
   API._internal() {
     _dio.options.baseUrl = "https://staging-myreceipts.phxcloud.io/MROMobileApplication/api/";
-    _dio.interceptors.add(PrettyDioLogger());
+    _dio.interceptors.add(PrettyDioLogger(request: true,requestHeader: true,requestBody: true));
     _dio.options.followRedirects = false;
   }
 

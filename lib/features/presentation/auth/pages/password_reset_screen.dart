@@ -55,7 +55,7 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                   Navigator.pushNamed(context, AppConstants.routePasswordResetSchemaSelection,
                       arguments: {AppConstants.keyArgUserName: userNameController.text});
                 } else {
-                  passwordResetCubit.callResetPasswordAPI(userNameController.text, tenantList.first.id.toString(), mroRepository);
+                  passwordResetCubit.callResetPasswordAPI(userNameController.text, tenantList.first.id.toString(), mroRepository!);
                 }
               } else if (state is PasswordResetFinalSuccessState) {
                 hideLoading(_dialogKey);
@@ -114,9 +114,9 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                           onPressed: () async {
                             await connectivity.checkConnectivity().then((value) {
                               if (value == ConnectivityResult.none) {
-                                passwordResetCubit.submitForm(userNameController.text, mroRepository, pref!, false);
+                                passwordResetCubit.submitForm(userNameController.text, mroRepository!, pref!, false);
                               } else {
-                                passwordResetCubit.submitForm(userNameController.text, mroRepository, pref!, true);
+                                passwordResetCubit.submitForm(userNameController.text, mroRepository!, pref!, true);
                               }
                             });
                           },

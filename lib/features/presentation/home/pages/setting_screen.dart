@@ -20,7 +20,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final pref = MroSharedPreferenceProvider.of(context)?.preference;
-    print("TAG_PREF_SETTINGS ${pref?.getBool(AppConstants.prefKeyIsLoggedIn)}");
+    debugPrint("TAG_PREF_SETTINGS ${pref?.getBool(AppConstants.prefKeyIsLoggedIn)}");
     isBioMetric = pref!.getBool(AppConstants.prefKeyIsBiometricEnabled);
     return Scaffold(
         appBar: AppBar(

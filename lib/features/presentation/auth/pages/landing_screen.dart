@@ -54,9 +54,9 @@ class _LandingScreenState extends State<LandingScreen> {
 
         await connectivity.checkConnectivity().then((value) {
           if (value == ConnectivityResult.none) {
-            biometricAuthCubit.submitForm(userName, password, schemaId, mroRepository, pref, false);
+            biometricAuthCubit.submitForm(userName, password, schemaId, mroRepository!, pref, false);
           } else {
-            biometricAuthCubit.submitForm(userName, password, schemaId, mroRepository, pref, true);
+            biometricAuthCubit.submitForm(userName, password, schemaId, mroRepository!, pref, true);
           }
         });
       }
@@ -86,7 +86,6 @@ class _LandingScreenState extends State<LandingScreen> {
 
     final BiometricAuthCubit biometricAuthCubit = context.read<BiometricAuthCubit>();
     Connectivity connectivity = Connectivity();
-
     return Scaffold(
       body: Center(
           child: BlocConsumer<BiometricAuthCubit, BiometricAuthState>(listenWhen: (context, state) {
@@ -142,6 +141,7 @@ class _LandingScreenState extends State<LandingScreen> {
                     CustomElevatedButton(
                         buttonText: StringConstants.loginWithBioMetric.toUpperCase(),
                         onPressed: () {
+                          Fluttertoast.showToast(msg: "Currency Added in the database");
                           authenticate(connectivity, biometricAuthCubit, mroRepository, pref!);
                         },
                         buttonBgColor: ColorConstants.blueThemeColor)

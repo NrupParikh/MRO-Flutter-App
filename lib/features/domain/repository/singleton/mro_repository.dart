@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:mro/features/data/models/sign_in/sign_in_response.dart';
 
 import '../../../../config/constants/api_constants.dart';
+import '../../../data/models/currency/get_currency.dart';
 import '../../../data/models/user_schemas/user_schemas.dart';
 import '../../api/singleton/api.dart';
 
@@ -39,8 +40,6 @@ class MroRepository {
       var body = json.encode(data);
 
       Response response = await _api.sendRequest.post(APIConstants.signIn, data: body);
-      print("STATUS CODE ${response.statusCode}");
-      print("BODY ${response.data}");
       Map<String, dynamic> responseData = response.data;
       return SignInResponse.fromJson(responseData);
     } catch (ex) {
@@ -53,9 +52,25 @@ class MroRepository {
     try {
       Map<String, dynamic> queryParams = {APIConstants.userName: userName, APIConstants.tenantId: tenantId};
       Response response = await _api.sendRequest.get(APIConstants.resetPassword, queryParameters: queryParams);
-      print("STATUS CODE ${response.statusCode}");
-      print("BODY ${response.data}");
       var data = response.data.toString();
+      return data;
+    } catch (ex) {
+      rethrow;
+    }
+  }
+
+  // ================ GET CURRENCY
+  Future<List<GetCurrency>> getCurrency(String token) async {
+    try {
+      Response response = await _api.sendRequest.get(APIConstants.getCurrency,
+          options: Options(headers: {
+            APIConstants.authorization: "${APIConstants.bearer}${APIConstants.space}$token",
+          }));
+      List<dynamic> jsonData = response.data;
+      List<GetCurrency> data = jsonData
+          .map((data) => GetCurrency.fromJson(data))
+          .toList();
+
       return data;
     } catch (ex) {
       rethrow;
