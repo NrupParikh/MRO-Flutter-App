@@ -58,4 +58,5 @@ class StringConstants {
   static const String msgUnknownError = "Unknown error occurred";
   static const String msgLogoutConfirmation =
       "Are you sure you want to Log Out of MRO?";
+  static const String expenseStatus = "Status:";
 }

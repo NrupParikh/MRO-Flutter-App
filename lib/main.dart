@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mro/config/constants/app_constants.dart';
+import 'package:mro/config/constants/color_constants.dart';
 import 'package:mro/config/constants/string_constants.dart';
 import 'package:mro/config/shared_preferences/provider/mro_shared_preference_provider.dart';
 import 'package:mro/features/data/data_sources/local/database/provider/mro_database_provider.dart';
@@ -85,7 +86,7 @@ class _MyAppState extends State<MyApp> {
               title: StringConstants.appFullName,
               debugShowCheckedModeBanner: false,
               theme: ThemeData(
-                colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+                colorScheme: ColorScheme.fromSeed(seedColor: ColorConstants.blueThemeColor),
                 useMaterial3: true,
               ),
               initialRoute: AppConstants.routeSplash,

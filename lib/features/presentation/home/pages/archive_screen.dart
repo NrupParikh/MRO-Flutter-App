@@ -97,10 +97,10 @@ class _ArchiveScreenState extends State<ArchiveScreen> implements TickerProvider
         },
         listener: (context, state) {
           if (state is GetExpenseListFailureState) {
-            // hideLoading(_dialogKey);
+            hideLoading(_dialogKey);
             // displayDialog(context, state.getExpenseListFailureMessage);
           } else if (state is LoadingState) {
-            // showLoading(context, _dialogKey);
+            showLoading(context, _dialogKey);
           }
         },
         buildWhen: (context, state) {
@@ -118,7 +118,7 @@ class _ArchiveScreenState extends State<ArchiveScreen> implements TickerProvider
             });
             return ArchiveScreenUI(tabController: _tabController, getExpenseList: getExpenseList);
           } else if (state is GetExpenseListSuccessState) {
-            // hideLoading(_dialogKey);
+            hideLoading(_dialogKey);
             getExpenseList = state.getExpenseList.list!;
             print("TAG_COUNTER ${getExpenseList.length.toString()}");
             return ArchiveScreenUI(tabController: _tabController, getExpenseList: getExpenseList);
@@ -172,6 +172,22 @@ class ArchiveScreenUI extends StatelessWidget {
                   ? ListView.builder(
                       itemCount: getExpenseList.length,
                       itemBuilder: (context, index) {
+                        var data = getExpenseList[index];
+                        var created = data.created;
+                        String? year = created?[0].toString();
+                        String? month = created?[1].toString();
+                        String? date = created?[2].toString();
+
+                        String fullDate = '${year!}-${month!}-${date!}';
+                        String? iso = data.amount?.currency?.iso;
+                        String amount = (data.amount?.amount).toString();
+
+                        String cost = "$iso $amount";
+                        String? name = data.account?.name;
+                        String status = "Waiting for approval";
+
+                        bool hasAttachment = data.attachments!.isNotEmpty ? true : false;
+
                         return InkWell(
                           onTap: () {
                             Fluttertoast.showToast(msg: "You click item at $index");
@@ -187,32 +203,37 @@ class ArchiveScreenUI extends StatelessWidget {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    const Expanded(
+                                    Expanded(
                                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                                         Row(children: [
                                           Text(
-                                            "2023-08-03",
-                                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 14),
+                                            fullDate,
+                                            style:
+                                                const TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 14),
                                           ),
-                                          SizedBox(
+                                          const SizedBox(
                                             width: 8.0,
                                           ),
                                           Text(
-                                            "USD 5346.00",
-                                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 14),
+                                            cost,
+                                            style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 14),
                                           )
                                         ]),
-                                        Text("TEST2",
-                                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 14)),
+                                        Text(name!,
+                                            style:
+                                                const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 14)),
                                       ]),
                                     ),
-                                    InkWell(
-                                      onTap: () {
-                                        Fluttertoast.showToast(msg: "See attachment at $index");
-                                      },
-                                      child: const Icon(
-                                        Icons.attach_file,
-                                        color: Colors.black,
+                                    Visibility(
+                                      visible: hasAttachment,
+                                      child: InkWell(
+                                        onTap: () {
+                                          Fluttertoast.showToast(msg: "See attachment at $index");
+                                        },
+                                        child: const Icon(
+                                          Icons.attach_file,
+                                          color: Colors.black,
+                                        ),
                                       ),
                                     )
                                   ],
@@ -221,11 +242,12 @@ class ArchiveScreenUI extends StatelessWidget {
                                 Column(
                                   children: [
                                     Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                                      const Row(children: [
-                                        Text("Status:",
+                                      Row(children: [
+                                        const Text(StringConstants.expenseStatus,
                                             style: TextStyle(fontWeight: FontWeight.normal, color: Colors.black, fontSize: 14)),
-                                        Text("Waiting for approval",
-                                            style: TextStyle(fontWeight: FontWeight.normal, color: Colors.black, fontSize: 14))
+                                        Text(status,
+                                            style:
+                                                const TextStyle(fontWeight: FontWeight.normal, color: Colors.black, fontSize: 14))
                                       ]),
                                       InkWell(
                                         onTap: () {

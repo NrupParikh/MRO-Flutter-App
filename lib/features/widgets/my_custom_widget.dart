@@ -1,4 +1,3 @@
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:mro/config/constants/app_constants.dart';
 
@@ -82,16 +81,15 @@ void showLoading(BuildContext context, GlobalKey<State<StatefulWidget>> dialogKe
     barrierDismissible: false,
     // Prevent the user from dismissing the dialog with a tap outside
     builder: (BuildContext context) {
+      double screenWidth = MediaQuery.of(context).size.width;
+      double screenHeight = MediaQuery.of(context).size.height;
+
       return AlertDialog(
         key: dialogKey,
-        content: const Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            CircularProgressIndicator(),
-            SizedBox(height: 16.0),
-            Text("Loading..."),
-          ],
-        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        content: Center(
+            child: SizedBox(width: screenWidth, height: screenHeight, child: const Center(child: CircularProgressIndicator()))),
       );
     },
   );
