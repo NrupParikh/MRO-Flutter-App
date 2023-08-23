@@ -1,4 +1,4 @@
-import '../../../../data/models/currency/get_currency.dart';
+import '../../../../data/models/currency/currency.dart';
 
 abstract class GetCurrencyState {}
 
@@ -7,7 +7,7 @@ class LoadingState extends GetCurrencyState {}
 class GetCurrencyInitialState extends GetCurrencyState {}
 
 class GetCurrencySuccessState extends GetCurrencyState {
-  final List<GetCurrency> currencyList;
+  final List<Currency> currencyList;
 
   GetCurrencySuccessState(this.currencyList);
 }

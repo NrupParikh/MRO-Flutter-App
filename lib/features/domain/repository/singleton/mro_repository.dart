@@ -1,10 +1,11 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:mro/features/data/models/get_expense_list/get_expense_list.dart';
 import 'package:mro/features/data/models/sign_in/sign_in_response.dart';
 
 import '../../../../config/constants/api_constants.dart';
-import '../../../data/models/currency/get_currency.dart';
+import '../../../data/models/currency/currency.dart';
 import '../../../data/models/user_schemas/user_schemas.dart';
 import '../../api/singleton/api.dart';
 
@@ -60,18 +61,31 @@ class MroRepository {
   }
 
   // ================ GET CURRENCY
-  Future<List<GetCurrency>> getCurrency(String token) async {
+  Future<List<Currency>> getCurrency(String token) async {
     try {
       Response response = await _api.sendRequest.get(APIConstants.getCurrency,
           options: Options(headers: {
             APIConstants.authorization: "${APIConstants.bearer}${APIConstants.space}$token",
           }));
       List<dynamic> jsonData = response.data;
-      List<GetCurrency> data = jsonData
-          .map((data) => GetCurrency.fromJson(data))
-          .toList();
+      List<Currency> data = jsonData.map((data) => Currency.fromJson(data)).toList();
 
       return data;
+    } catch (ex) {
+      rethrow;
+    }
+  }
+
+  // ================ GET EXPENSE LIST
+  Future<GetExpenseList> getExpenseList(String token) async {
+    try {
+      Response response = await _api.sendRequest.get(APIConstants.getExpenseList,
+          options: Options(headers: {
+            APIConstants.authorization: "${APIConstants.bearer}${APIConstants.space}$token",
+          }));
+
+      Map<String, dynamic> responseData = response.data;
+      return GetExpenseList.fromJson(responseData);
     } catch (ex) {
       rethrow;
     }

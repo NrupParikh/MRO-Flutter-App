@@ -1,6 +1,8 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mro/config/shared_preferences/singleton/mro_shared_preference.dart';
+import 'package:mro/features/domain/repository/singleton/mro_repository.dart';
 
 import '../../../../config/constants/app_constants.dart';
 import '../../../../config/constants/color_constants.dart';
@@ -60,70 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
             // Getting Access of Mro Repository singleton instance
             final mroRepository = MroRepositoryProvider.of(context)?.mroRepository;
 
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  const SizedBox(
-                    height: 48,
-                  ),
-                  const ScanItLogoImage(),
-                  const SizedBox(
-                    height: 48,
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 32, right: 32),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        StringConstants.userName,
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 32, right: 32),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: TextField(
-                        controller: userNameController,
-                        decoration: const InputDecoration(
-                            enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.black)),
-                            focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.black)),
-                            hintText: StringConstants.hintEnterUserName,
-                            floatingLabelBehavior: FloatingLabelBehavior.never),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  CustomElevatedButton(
-                      buttonText: StringConstants.next.toUpperCase(),
-                      onPressed: () async {
-                        await connectivity.checkConnectivity().then((value) {
-                          if (value == ConnectivityResult.none) {
-                            logInCubit.submitForm(userNameController.text, mroRepository!, pref!, false);
-                          } else {
-                            logInCubit.submitForm(userNameController.text, mroRepository!, pref!, true);
-                          }
-                        });
-                      },
-                      buttonBgColor: ColorConstants.blueThemeColor),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 32),
-                    child: CustomElevatedButton(
-                        buttonText: StringConstants.passwordReset.toUpperCase(),
-                        onPressed: () {
-                          Navigator.pushNamed(context, AppConstants.routePasswordReset);
-                        },
-                        buttonBgColor: Colors.red),
-                  ),
-                ],
-              ),
-            );
+            return LoginScreenUI(userNameController: userNameController, connectivity: connectivity, logInCubit: logInCubit, mroRepository: mroRepository, pref: pref);
           } else {
             return const Center(child: Text('Unknown state'));
           }
@@ -144,5 +83,90 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     showDialog(context: context, builder: (BuildContext context) => dialog);
+  }
+}
+
+class LoginScreenUI extends StatelessWidget {
+  const LoginScreenUI({
+    super.key,
+    required this.userNameController,
+    required this.connectivity,
+    required this.logInCubit,
+    required this.mroRepository,
+    required this.pref,
+  });
+
+  final TextEditingController userNameController;
+  final Connectivity connectivity;
+  final LogInCubit logInCubit;
+  final MroRepository? mroRepository;
+  final MroSharedPreference? pref;
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const SizedBox(
+            height: 48,
+          ),
+          const ScanItLogoImage(),
+          const SizedBox(
+            height: 48,
+          ),
+          const Padding(
+            padding: EdgeInsets.only(left: 32, right: 32),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                StringConstants.userName,
+                style: TextStyle(color: Colors.black),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 32, right: 32),
+            child: SizedBox(
+              width: double.infinity,
+              child: TextField(
+                controller: userNameController,
+                decoration: const InputDecoration(
+                    enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.black)),
+                    focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.black)),
+                    hintText: StringConstants.hintEnterUserName,
+                    floatingLabelBehavior: FloatingLabelBehavior.never),
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 8,
+          ),
+          CustomElevatedButton(
+              buttonText: StringConstants.next.toUpperCase(),
+              onPressed: () async {
+                await connectivity.checkConnectivity().then((value) {
+                  if (value == ConnectivityResult.none) {
+                    logInCubit.submitForm(userNameController.text, mroRepository!, pref!, false);
+                  } else {
+                    logInCubit.submitForm(userNameController.text, mroRepository!, pref!, true);
+                  }
+                });
+              },
+              buttonBgColor: ColorConstants.blueThemeColor),
+          const SizedBox(
+            height: 16,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 32),
+            child: CustomElevatedButton(
+                buttonText: StringConstants.passwordReset.toUpperCase(),
+                onPressed: () {
+                  Navigator.pushNamed(context, AppConstants.routePasswordReset);
+                },
+                buttonBgColor: Colors.red),
+          ),
+        ],
+      ),
+    );
   }
 }

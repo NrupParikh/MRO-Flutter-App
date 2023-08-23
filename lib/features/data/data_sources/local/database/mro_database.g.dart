@@ -85,7 +85,7 @@ class _$MroDatabase extends MroDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `GetCurrency` (`id` INTEGER, `version` INTEGER, `name` TEXT, `iso` TEXT, `prefix` TEXT, `postfix` TEXT, `currencyFormat` TEXT, `countryId` INTEGER, `countryName` TEXT, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `Currency` (`id` INTEGER, `version` INTEGER, `name` TEXT, `iso` TEXT, `prefix` TEXT, `postfix` TEXT, `currencyFormat` TEXT, `countryId` INTEGER, `countryName` TEXT, PRIMARY KEY (`id`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -103,10 +103,10 @@ class _$MroDAO extends MroDAO {
   _$MroDAO(
     this.database,
     this.changeListener,
-  ) : _getCurrencyInsertionAdapter = InsertionAdapter(
+  ) : _currencyInsertionAdapter = InsertionAdapter(
             database,
-            'GetCurrency',
-            (GetCurrency item) => <String, Object?>{
+            'Currency',
+            (Currency item) => <String, Object?>{
                   'id': item.id,
                   'version': item.version,
                   'name': item.name,
@@ -122,17 +122,16 @@ class _$MroDAO extends MroDAO {
 
   final StreamController<String> changeListener;
 
-  final InsertionAdapter<GetCurrency> _getCurrencyInsertionAdapter;
+  final InsertionAdapter<Currency> _currencyInsertionAdapter;
 
   @override
-  Future<void> insertCurrency(GetCurrency currency) async {
-    await _getCurrencyInsertionAdapter.insert(
-        currency, OnConflictStrategy.abort);
+  Future<void> insertCurrency(Currency currency) async {
+    await _currencyInsertionAdapter.insert(currency, OnConflictStrategy.abort);
   }
 
   @override
-  Future<List<int>> insertAllCurrency(List<GetCurrency> currencyList) {
-    return _getCurrencyInsertionAdapter.insertListAndReturnIds(
+  Future<List<int>> insertAllCurrency(List<Currency> currencyList) {
+    return _currencyInsertionAdapter.insertListAndReturnIds(
         currencyList, OnConflictStrategy.abort);
   }
 }

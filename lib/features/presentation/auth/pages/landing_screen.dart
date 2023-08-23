@@ -141,7 +141,6 @@ class _LandingScreenState extends State<LandingScreen> {
                     CustomElevatedButton(
                         buttonText: StringConstants.loginWithBioMetric.toUpperCase(),
                         onPressed: () {
-                          Fluttertoast.showToast(msg: "Currency Added in the database");
                           authenticate(connectivity, biometricAuthCubit, mroRepository, pref!);
                         },
                         buttonBgColor: ColorConstants.blueThemeColor)

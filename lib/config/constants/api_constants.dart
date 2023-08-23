@@ -8,6 +8,7 @@ class APIConstants {
   static const String signIn = "signin";
   static const String resetPassword = "resetPassword";
   static const String getCurrency = "get/currencies";
+  static const String getExpenseList = "get/expense/list";
 
   // PARAMETERS
   static const String userName = "username";

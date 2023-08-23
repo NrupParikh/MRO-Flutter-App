@@ -10,6 +10,7 @@ import 'package:mro/features/presentation/auth/bloc/biometric_auth/biometric_aut
 import 'package:mro/features/presentation/auth/bloc/password_reset_schema_selection/password_reset_schema_selection_cubit.dart';
 import 'package:mro/features/presentation/auth/pages/password_reset_schema_selection_screen.dart';
 import 'package:mro/features/presentation/home/bloc/get_currency/get_currency_cubit.dart';
+import 'package:mro/features/presentation/home/bloc/get_expense_list/GetExpenseListCubit.dart';
 
 import 'config/shared_preferences/singleton/mro_shared_preference.dart';
 import 'features/domain/api/providers/api_provider.dart';
@@ -102,7 +103,8 @@ class _MyAppState extends State<MyApp> {
                 AppConstants.routeHome: (context) =>
                     BlocProvider(create: (context) => GetCurrencyCubit(), child: const HomeScreen()),
                 AppConstants.routeNewExpenses: (context) => const NewExpensesScreen(),
-                AppConstants.routeArchive: (context) => const ArchiveScreen(),
+                AppConstants.routeArchive: (context) =>
+                    BlocProvider(create: (context) => GetExpenseListCubit(), child: const ArchiveScreen()),
                 AppConstants.routeMyApprovals: (context) => const MyApprovalsScreen(),
                 AppConstants.routeSettings: (context) => const SettingsScreen(),
               },

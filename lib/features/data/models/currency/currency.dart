@@ -3,7 +3,7 @@ import 'package:floor/floor.dart';
 import '../sign_in/country.dart';
 
 @entity
-class GetCurrency {
+class Currency {
   @PrimaryKey(autoGenerate: false)
   int? id;
   int? version;
@@ -17,9 +17,9 @@ class GetCurrency {
   int? countryId;
   String? countryName;
 
-  GetCurrency({this.id, this.version, this.name, this.iso, this.prefix, this.postfix, this.currencyFormat});
+  Currency({this.id, this.version, this.name, this.iso, this.prefix, this.postfix, this.currencyFormat});
 
-  GetCurrency.fromJson(Map<String, dynamic> json) {
+  Currency.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     version = json['version'];
     name = json['name'];
