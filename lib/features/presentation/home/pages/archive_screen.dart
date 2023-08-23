@@ -98,7 +98,7 @@ class _ArchiveScreenState extends State<ArchiveScreen> implements TickerProvider
         listener: (context, state) {
           if (state is GetExpenseListFailureState) {
             hideLoading(_dialogKey);
-            // displayDialog(context, state.getExpenseListFailureMessage);
+            displayDialog(context, state.getExpenseListFailureMessage);
           } else if (state is LoadingState) {
             showLoading(context, _dialogKey);
           }
@@ -184,7 +184,7 @@ class ArchiveScreenUI extends StatelessWidget {
 
                         String cost = "$iso $amount";
                         String? name = data.account?.name;
-                        String status = "Waiting for approval";
+                        String? status = data.currentState?.name;
 
                         bool hasAttachment = data.attachments!.isNotEmpty ? true : false;
 
@@ -245,7 +245,7 @@ class ArchiveScreenUI extends StatelessWidget {
                                       Row(children: [
                                         const Text(StringConstants.expenseStatus,
                                             style: TextStyle(fontWeight: FontWeight.normal, color: Colors.black, fontSize: 14)),
-                                        Text(status,
+                                        Text(status!,
                                             style:
                                                 const TextStyle(fontWeight: FontWeight.normal, color: Colors.black, fontSize: 14))
                                       ]),

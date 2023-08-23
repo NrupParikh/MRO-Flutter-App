@@ -3,9 +3,9 @@ import 'package:mro/features/data/models/currency/currency.dart';
 
 @dao
 abstract class MroDAO {
-  @insert
+  @Insert(onConflict: OnConflictStrategy.replace)
   Future<void> insertCurrency(Currency currency);
 
-  @insert
+  @Insert(onConflict: OnConflictStrategy.replace)
   Future<List<int>> insertAllCurrency(List<Currency> currencyList);
 }

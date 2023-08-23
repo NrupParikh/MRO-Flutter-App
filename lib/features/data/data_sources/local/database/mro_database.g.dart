@@ -126,12 +126,13 @@ class _$MroDAO extends MroDAO {
 
   @override
   Future<void> insertCurrency(Currency currency) async {
-    await _currencyInsertionAdapter.insert(currency, OnConflictStrategy.abort);
+    await _currencyInsertionAdapter.insert(
+        currency, OnConflictStrategy.replace);
   }
 
   @override
   Future<List<int>> insertAllCurrency(List<Currency> currencyList) {
     return _currencyInsertionAdapter.insertListAndReturnIds(
-        currencyList, OnConflictStrategy.abort);
+        currencyList, OnConflictStrategy.replace);
   }
 }
