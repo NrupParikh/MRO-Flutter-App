@@ -1,23 +1,27 @@
-import 'accounts.dart';
-import 'attributes.dart';
-import 'currency.dart';
-import 'organization_type.dart';
+import 'package:floor/floor.dart';
 
+@entity
 class Parent {
+  @primaryKey
   int? id;
   int? version;
   String? name;
   String? externalIdentifier;
   String? abbreviation;
-  List<Attributes>? attributes;
+
+  // List<Attributes>? attributes;
   String? shortDescription;
-  Object? parent;
-  OrganizationType? organizationType;
+
+  // Object? parent;
+
+  // OrganizationType? organizationType;
   int? active;
-  List<Accounts>? accounts;
+
+  // List<Accounts>? accounts;
   bool? activatePrimaryVAT;
   bool? activateSecondaryVAT;
-  Currency? currency;
+
+  // Currency? currency;
   bool? substituteSubValue;
 
   Parent(
@@ -26,15 +30,15 @@ class Parent {
       this.name,
       this.externalIdentifier,
       this.abbreviation,
-      this.attributes,
+      // this.attributes,
       this.shortDescription,
-      this.parent,
-      this.organizationType,
+      // this.parent,
+      // this.organizationType,
       this.active,
-      this.accounts,
+      // this.accounts,
       this.activatePrimaryVAT,
       this.activateSecondaryVAT,
-      this.currency,
+      // this.currency,
       this.substituteSubValue});
 
   Parent.fromJson(Map<String, dynamic> json) {
@@ -43,25 +47,25 @@ class Parent {
     name = json['name'];
     externalIdentifier = json['externalIdentifier'];
     abbreviation = json['abbreviation'];
-    if (json['attributes'] != null) {
-      attributes = <Attributes>[];
-      json['attributes'].forEach((v) {
-        attributes!.add(Attributes.fromJson(v));
-      });
-    }
+    // if (json['attributes'] != null) {
+    //   attributes = <Attributes>[];
+    //   json['attributes'].forEach((v) {
+    //     attributes!.add(Attributes.fromJson(v));
+    //   });
+    // }
     shortDescription = json['shortDescription'];
-    parent = json['parent'];
-    organizationType = json['organizationType'] != null ? OrganizationType.fromJson(json['organizationType']) : null;
+    // parent = json['parent'];
+    // organizationType = json['organizationType'] != null ? OrganizationType.fromJson(json['organizationType']) : null;
     active = json['active'];
-    if (json['accounts'] != null) {
-      accounts = <Accounts>[];
-      json['accounts'].forEach((v) {
-        accounts!.add(Accounts.fromJson(v));
-      });
-    }
+    // if (json['accounts'] != null) {
+    //   accounts = <Accounts>[];
+    //   json['accounts'].forEach((v) {
+    //     accounts!.add(Accounts.fromJson(v));
+    //   });
+    // }
     activatePrimaryVAT = json['activatePrimaryVAT'];
     activateSecondaryVAT = json['activateSecondaryVAT'];
-    currency = json['currency'] != null ? Currency.fromJson(json['currency']) : null;
+    // currency = json['currency'] != null ? Currency.fromJson(json['currency']) : null;
     substituteSubValue = json['substituteSubValue'];
   }
 
@@ -72,23 +76,23 @@ class Parent {
     data['name'] = name;
     data['externalIdentifier'] = externalIdentifier;
     data['abbreviation'] = abbreviation;
-    if (attributes != null) {
-      data['attributes'] = attributes!.map((v) => v.toJson()).toList();
-    }
+    // if (attributes != null) {
+    //   data['attributes'] = attributes!.map((v) => v.toJson()).toList();
+    // }
     data['shortDescription'] = shortDescription;
     //data['parent'] = parent;
-    if (organizationType != null) {
-      data['organizationType'] = organizationType!.toJson();
-    }
+    // if (organizationType != null) {
+    //   data['organizationType'] = organizationType!.toJson();
+    // }
     data['active'] = active;
-    if (accounts != null) {
-      data['accounts'] = accounts!.map((v) => v.toJson()).toList();
-    }
+    // if (accounts != null) {
+    //   data['accounts'] = accounts!.map((v) => v.toJson()).toList();
+    // }
     data['activatePrimaryVAT'] = activatePrimaryVAT;
     data['activateSecondaryVAT'] = activateSecondaryVAT;
-    if (currency != null) {
-      data['currency'] = currency!.toJson();
-    }
+    // if (currency != null) {
+    //   data['currency'] = currency!.toJson();
+    // }
     data['substituteSubValue'] = substituteSubValue;
     return data;
   }

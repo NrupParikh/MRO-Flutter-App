@@ -1,4 +1,8 @@
+import 'package:floor/floor.dart';
+
+@entity
 class Attributes {
+  @primaryKey
   int? id;
   int? version;
   String? value;

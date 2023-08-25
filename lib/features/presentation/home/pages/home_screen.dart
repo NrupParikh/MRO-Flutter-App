@@ -27,10 +27,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final pref = MroSharedPreferenceProvider.of(context)?.preference;
+    final pref = MroSharedPreferenceProvider.of(context)!.preference;
     final GetCurrencyCubit getCurrencyCubit = context.read<GetCurrencyCubit>();
     Connectivity connectivity = Connectivity();
     final database = MroDatabaseProvider.of(context).database;
+
+    var isApprover = pref.getBool(AppConstants.prefKeyIsisApprover);
+    var isEmployee = pref.getBool(AppConstants.prefKeyIsEmployee);
+
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -70,13 +74,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
               connectivity.checkConnectivity().then((value) {
                 if (value == ConnectivityResult.none) {
-                  getCurrencyCubit.getCurrency(database,mroRepository!, pref!, false);
+                  getCurrencyCubit.getCurrency(database, mroRepository!, pref, false);
                 } else {
-                  getCurrencyCubit.getCurrency(database,mroRepository!, pref!, true);
+                  getCurrencyCubit.getCurrency(database, mroRepository!, pref, true);
                 }
               });
 
-              return const HomeScreenUI();
+              return HomeScreenUI(isApprover: isApprover, isEmployee: isEmployee);
             } else {
               return const Center(child: Text('Unknown state'));
             }
@@ -98,9 +102,10 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class HomeScreenUI extends StatelessWidget {
-  const HomeScreenUI({
-    super.key,
-  });
+  final bool isApprover;
+  final bool isEmployee;
+
+  const HomeScreenUI({super.key, required this.isApprover, required this.isEmployee});
 
   @override
   Widget build(BuildContext context) {
@@ -164,10 +169,11 @@ class HomeScreenUI extends StatelessWidget {
         ),
         ElevatedButton(
           onPressed: () {
-            Navigator.pushNamed(context, AppConstants.routeMyApprovals);
+            !isApprover ? null : Navigator.pushNamed(context, AppConstants.routeMyApprovals);
           },
           style: ElevatedButton.styleFrom(
-              backgroundColor: ColorConstants.homeScreenButtonBgColor,
+              backgroundColor:
+                  !isApprover ? ColorConstants.homeScreenButtonBgColor.withAlpha(5) : ColorConstants.homeScreenButtonBgColor,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0))),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

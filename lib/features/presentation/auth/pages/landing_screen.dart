@@ -6,6 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:local_auth/error_codes.dart' as auth_error;
 import 'package:local_auth/local_auth.dart';
 import 'package:mro/config/shared_preferences/singleton/mro_shared_preference.dart';
+import 'package:mro/features/data/data_sources/local/database/mro_database.dart';
 import 'package:mro/features/domain/repository/singleton/mro_repository.dart';
 import 'package:mro/features/presentation/auth/bloc/biometric_auth/biometric_auth_cubit.dart';
 import 'package:mro/features/presentation/auth/bloc/biometric_auth/biometric_auth_state.dart';
@@ -14,6 +15,7 @@ import '../../../../config/constants/app_constants.dart';
 import '../../../../config/constants/color_constants.dart';
 import '../../../../config/constants/string_constants.dart';
 import '../../../../config/shared_preferences/provider/mro_shared_preference_provider.dart';
+import '../../../data/data_sources/local/database/provider/mro_database_provider.dart';
 import '../../../domain/repository/providers/mro_repository_provider.dart';
 import '../../../widgets/my_custom_widget.dart';
 
@@ -37,7 +39,7 @@ class _LandingScreenState extends State<LandingScreen> {
 
   // // ================== BIOMETRIC AUTHENTICATION
 
-  Future<void> authenticate(Connectivity connectivity, BiometricAuthCubit biometricAuthCubit, MroRepository? mroRepository,
+  Future<void> authenticate(Connectivity connectivity, BiometricAuthCubit biometricAuthCubit, MroDatabase mroDatabase,MroRepository? mroRepository,
       MroSharedPreference pref) async {
     try {
       final bool didAuthenticate = await auth.authenticate(
@@ -54,9 +56,9 @@ class _LandingScreenState extends State<LandingScreen> {
 
         await connectivity.checkConnectivity().then((value) {
           if (value == ConnectivityResult.none) {
-            biometricAuthCubit.submitForm(userName, password, schemaId, mroRepository!, pref, false);
+            biometricAuthCubit.submitForm(userName, password, schemaId, mroDatabase, mroRepository!, pref, false);
           } else {
-            biometricAuthCubit.submitForm(userName, password, schemaId, mroRepository!, pref, true);
+            biometricAuthCubit.submitForm(userName, password, schemaId, mroDatabase, mroRepository!, pref, true);
           }
         });
       }
@@ -105,6 +107,7 @@ class _LandingScreenState extends State<LandingScreen> {
       }, builder: (context, state) {
         if (state is BiometricInitialState) {
           final mroRepository = MroRepositoryProvider.of(context)?.mroRepository;
+          final mroDatabase = MroDatabaseProvider.of(context).database;
 
           return Stack(
             children: [
@@ -141,7 +144,7 @@ class _LandingScreenState extends State<LandingScreen> {
                     CustomElevatedButton(
                         buttonText: StringConstants.loginWithBioMetric.toUpperCase(),
                         onPressed: () {
-                          authenticate(connectivity, biometricAuthCubit, mroRepository, pref!);
+                          authenticate(connectivity, biometricAuthCubit, mroDatabase, mroRepository, pref!);
                         },
                         buttonBgColor: ColorConstants.blueThemeColor)
                   ]

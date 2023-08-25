@@ -1,25 +1,39 @@
+import 'package:floor/floor.dart';
+import 'package:mro/features/data/models/sign_in/accounts.dart';
+import 'package:mro/features/data/models/sign_in/attributes.dart';
+import 'package:mro/features/data/models/sign_in/organization_type.dart';
 import 'package:mro/features/data/models/sign_in/parent.dart';
+import 'package:mro/features/data/models/type_converter/accounts_list_type_converter.dart';
+import 'package:mro/features/data/models/type_converter/attributes_list_type_converter.dart';
+import 'package:mro/features/data/models/type_converter/organization_type_type_converter.dart';
+import 'package:mro/features/data/models/type_converter/parents_type_converter.dart';
 
-import 'accounts.dart';
-import 'attributes.dart';
-import 'currency.dart';
-import 'organization_type.dart';
-
+@entity
 class Organizations {
+  @primaryKey
   int? id;
   int? version;
   String? name;
   String? externalIdentifier;
   String? abbreviation;
-  List<Attributes>? attributes;
+
+  @TypeConverters([AttributesListConverter])
+  late List<Attributes> attributes;
   String? shortDescription;
+
+  @TypeConverters([ParentConverter])
   Parent? parent;
+
+  @TypeConverters([OrganizationTypeConverter])
   OrganizationType? organizationType;
   int? active;
-  List<Accounts>? accounts;
+
+  @TypeConverters([AccountsListConverter])
+  late List<Accounts> accounts;
   bool? activatePrimaryVAT;
   bool? activateSecondaryVAT;
-  Currency? currency;
+
+  // Currency? currency;
   bool? substituteSubValue;
 
   Organizations(
@@ -28,15 +42,15 @@ class Organizations {
       this.name,
       this.externalIdentifier,
       this.abbreviation,
-      this.attributes,
+      required this.attributes,
       this.shortDescription,
       this.parent,
       this.organizationType,
       this.active,
-      this.accounts,
+      required this.accounts,
       this.activatePrimaryVAT,
       this.activateSecondaryVAT,
-      this.currency,
+      // this.currency,
       this.substituteSubValue});
 
   Organizations.fromJson(Map<String, dynamic> json) {
@@ -63,7 +77,7 @@ class Organizations {
     }
     activatePrimaryVAT = json['activatePrimaryVAT'];
     activateSecondaryVAT = json['activateSecondaryVAT'];
-    currency = json['currency'] != null ? Currency.fromJson(json['currency']) : null;
+    // currency = json['currency'] != null ? Currency.fromJson(json['currency']) : null;
     substituteSubValue = json['substituteSubValue'];
   }
 
@@ -90,9 +104,9 @@ class Organizations {
     }
     data['activatePrimaryVAT'] = activatePrimaryVAT;
     data['activateSecondaryVAT'] = activateSecondaryVAT;
-    if (currency != null) {
-      data['currency'] = currency!.toJson();
-    }
+    // if (currency != null) {
+    //   data['currency'] = currency!.toJson();
+    // }
     data['substituteSubValue'] = substituteSubValue;
     return data;
   }

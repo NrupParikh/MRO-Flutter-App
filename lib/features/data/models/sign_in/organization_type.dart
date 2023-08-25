@@ -1,4 +1,8 @@
+import 'package:floor/floor.dart';
+
+@entity
 class OrganizationType {
+  @primaryKey
   int? id;
   String? code;
   String? name;

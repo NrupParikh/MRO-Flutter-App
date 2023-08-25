@@ -86,6 +86,20 @@ class _$MroDatabase extends MroDatabase {
       onCreate: (database, version) async {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Currency` (`id` INTEGER, `version` INTEGER, `name` TEXT, `iso` TEXT, `prefix` TEXT, `postfix` TEXT, `currencyFormat` TEXT, `countryId` INTEGER, `countryName` TEXT, PRIMARY KEY (`id`))');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `Employee` (`id` INTEGER, `firstName` TEXT, `lastName` TEXT, `middleName` TEXT, `initials` TEXT, `phone` TEXT, `email` TEXT, `externalIdentifier` TEXT, `account` TEXT, `organizations` TEXT NOT NULL, `vendorCode` TEXT, `isCompanyCreditCardHolder` INTEGER, PRIMARY KEY (`id`))');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `Organizations` (`id` INTEGER, `version` INTEGER, `name` TEXT, `externalIdentifier` TEXT, `abbreviation` TEXT, `attributes` TEXT NOT NULL, `shortDescription` TEXT, `parent` TEXT, `organizationType` TEXT, `active` INTEGER, `accounts` TEXT NOT NULL, `activatePrimaryVAT` INTEGER, `activateSecondaryVAT` INTEGER, `substituteSubValue` INTEGER, PRIMARY KEY (`id`))');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `Attributes` (`id` INTEGER, `version` INTEGER, `value` TEXT, `name` TEXT, PRIMARY KEY (`id`))');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `Accounts` (`id` INTEGER, `version` INTEGER, `name` TEXT, `active` INTEGER, `div` TEXT, `dept` TEXT, `account` TEXT, `sub` TEXT, `receiptVerifyRequired` INTEGER, `thresholdAmount` TEXT, `receiptUploadRequired` INTEGER, `fields` TEXT NOT NULL, `identifier` TEXT, PRIMARY KEY (`id`))');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `Parent` (`id` INTEGER, `version` INTEGER, `name` TEXT, `externalIdentifier` TEXT, `abbreviation` TEXT, `shortDescription` TEXT, `active` INTEGER, `activatePrimaryVAT` INTEGER, `activateSecondaryVAT` INTEGER, `substituteSubValue` INTEGER, PRIMARY KEY (`id`))');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `OrganizationType` (`id` INTEGER, `code` TEXT, `name` TEXT, PRIMARY KEY (`id`))');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `Fields` (`id` INTEGER, `version` INTEGER, `label` TEXT, `required` INTEGER, `sequence` REAL, `uppercase` INTEGER, `maxLength` INTEGER, PRIMARY KEY (`id`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -103,7 +117,7 @@ class _$MroDAO extends MroDAO {
   _$MroDAO(
     this.database,
     this.changeListener,
-  ) : _currencyInsertionAdapter = InsertionAdapter(
+  )   : _currencyInsertionAdapter = InsertionAdapter(
             database,
             'Currency',
             (Currency item) => <String, Object?>{
@@ -116,6 +130,128 @@ class _$MroDAO extends MroDAO {
                   'currencyFormat': item.currencyFormat,
                   'countryId': item.countryId,
                   'countryName': item.countryName
+                }),
+        _employeeInsertionAdapter = InsertionAdapter(
+            database,
+            'Employee',
+            (Employee item) => <String, Object?>{
+                  'id': item.id,
+                  'firstName': item.firstName,
+                  'lastName': item.lastName,
+                  'middleName': item.middleName,
+                  'initials': item.initials,
+                  'phone': item.phone,
+                  'email': item.email,
+                  'externalIdentifier': item.externalIdentifier,
+                  'account': item.account,
+                  'organizations':
+                      _organizationsListConverter.encode(item.organizations),
+                  'vendorCode': item.vendorCode,
+                  'isCompanyCreditCardHolder':
+                      item.isCompanyCreditCardHolder == null
+                          ? null
+                          : (item.isCompanyCreditCardHolder! ? 1 : 0)
+                }),
+        _organizationsInsertionAdapter = InsertionAdapter(
+            database,
+            'Organizations',
+            (Organizations item) => <String, Object?>{
+                  'id': item.id,
+                  'version': item.version,
+                  'name': item.name,
+                  'externalIdentifier': item.externalIdentifier,
+                  'abbreviation': item.abbreviation,
+                  'attributes':
+                      _attributesListConverter.encode(item.attributes),
+                  'shortDescription': item.shortDescription,
+                  'parent': _parentConverter.encode(item.parent),
+                  'organizationType':
+                      _organizationTypeConverter.encode(item.organizationType),
+                  'active': item.active,
+                  'accounts': _accountsListConverter.encode(item.accounts),
+                  'activatePrimaryVAT': item.activatePrimaryVAT == null
+                      ? null
+                      : (item.activatePrimaryVAT! ? 1 : 0),
+                  'activateSecondaryVAT': item.activateSecondaryVAT == null
+                      ? null
+                      : (item.activateSecondaryVAT! ? 1 : 0),
+                  'substituteSubValue': item.substituteSubValue == null
+                      ? null
+                      : (item.substituteSubValue! ? 1 : 0)
+                }),
+        _attributesInsertionAdapter = InsertionAdapter(
+            database,
+            'Attributes',
+            (Attributes item) => <String, Object?>{
+                  'id': item.id,
+                  'version': item.version,
+                  'value': item.value,
+                  'name': item.name
+                }),
+        _accountsInsertionAdapter = InsertionAdapter(
+            database,
+            'Accounts',
+            (Accounts item) => <String, Object?>{
+                  'id': item.id,
+                  'version': item.version,
+                  'name': item.name,
+                  'active': item.active == null ? null : (item.active! ? 1 : 0),
+                  'div': item.div,
+                  'dept': item.dept,
+                  'account': item.account,
+                  'sub': item.sub,
+                  'receiptVerifyRequired': item.receiptVerifyRequired == null
+                      ? null
+                      : (item.receiptVerifyRequired! ? 1 : 0),
+                  'thresholdAmount': item.thresholdAmount,
+                  'receiptUploadRequired': item.receiptUploadRequired == null
+                      ? null
+                      : (item.receiptUploadRequired! ? 1 : 0),
+                  'fields': _fieldsListConverter.encode(item.fields),
+                  'identifier': item.identifier
+                }),
+        _fieldsInsertionAdapter = InsertionAdapter(
+            database,
+            'Fields',
+            (Fields item) => <String, Object?>{
+                  'id': item.id,
+                  'version': item.version,
+                  'label': item.label,
+                  'required':
+                      item.required == null ? null : (item.required! ? 1 : 0),
+                  'sequence': item.sequence,
+                  'uppercase':
+                      item.uppercase == null ? null : (item.uppercase! ? 1 : 0),
+                  'maxLength': item.maxLength
+                }),
+        _parentInsertionAdapter = InsertionAdapter(
+            database,
+            'Parent',
+            (Parent item) => <String, Object?>{
+                  'id': item.id,
+                  'version': item.version,
+                  'name': item.name,
+                  'externalIdentifier': item.externalIdentifier,
+                  'abbreviation': item.abbreviation,
+                  'shortDescription': item.shortDescription,
+                  'active': item.active,
+                  'activatePrimaryVAT': item.activatePrimaryVAT == null
+                      ? null
+                      : (item.activatePrimaryVAT! ? 1 : 0),
+                  'activateSecondaryVAT': item.activateSecondaryVAT == null
+                      ? null
+                      : (item.activateSecondaryVAT! ? 1 : 0),
+                  'substituteSubValue': item.substituteSubValue == null
+                      ? null
+                      : (item.substituteSubValue! ? 1 : 0)
+                }),
+        _organizationTypeInsertionAdapter = InsertionAdapter(
+            database,
+            'OrganizationType',
+            (OrganizationType item) => <String, Object?>{
+                  'id': item.id,
+                  'code': item.code,
+                  'name': item.name
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -123,6 +259,20 @@ class _$MroDAO extends MroDAO {
   final StreamController<String> changeListener;
 
   final InsertionAdapter<Currency> _currencyInsertionAdapter;
+
+  final InsertionAdapter<Employee> _employeeInsertionAdapter;
+
+  final InsertionAdapter<Organizations> _organizationsInsertionAdapter;
+
+  final InsertionAdapter<Attributes> _attributesInsertionAdapter;
+
+  final InsertionAdapter<Accounts> _accountsInsertionAdapter;
+
+  final InsertionAdapter<Fields> _fieldsInsertionAdapter;
+
+  final InsertionAdapter<Parent> _parentInsertionAdapter;
+
+  final InsertionAdapter<OrganizationType> _organizationTypeInsertionAdapter;
 
   @override
   Future<void> insertCurrency(Currency currency) async {
@@ -135,4 +285,55 @@ class _$MroDAO extends MroDAO {
     return _currencyInsertionAdapter.insertListAndReturnIds(
         currencyList, OnConflictStrategy.replace);
   }
+
+  @override
+  Future<int> insertEmployee(Employee employee) {
+    return _employeeInsertionAdapter.insertAndReturnId(
+        employee, OnConflictStrategy.replace);
+  }
+
+  @override
+  Future<List<int>> insertAllOrganizations(
+      List<Organizations> organizationsList) {
+    return _organizationsInsertionAdapter.insertListAndReturnIds(
+        organizationsList, OnConflictStrategy.replace);
+  }
+
+  @override
+  Future<List<int>> insertAllAttributes(List<Attributes> attributesList) {
+    return _attributesInsertionAdapter.insertListAndReturnIds(
+        attributesList, OnConflictStrategy.replace);
+  }
+
+  @override
+  Future<List<int>> insertAllAccounts(List<Accounts> accountsList) {
+    return _accountsInsertionAdapter.insertListAndReturnIds(
+        accountsList, OnConflictStrategy.replace);
+  }
+
+  @override
+  Future<List<int>> insertAllFields(List<Fields> fieldsList) {
+    return _fieldsInsertionAdapter.insertListAndReturnIds(
+        fieldsList, OnConflictStrategy.replace);
+  }
+
+  @override
+  Future<int> insertParent(Parent parent) {
+    return _parentInsertionAdapter.insertAndReturnId(
+        parent, OnConflictStrategy.replace);
+  }
+
+  @override
+  Future<int> insertOrganizationType(OrganizationType organizationType) {
+    return _organizationTypeInsertionAdapter.insertAndReturnId(
+        organizationType, OnConflictStrategy.replace);
+  }
 }
+
+// ignore_for_file: unused_element
+final _organizationsListConverter = OrganizationsListConverter();
+final _attributesListConverter = AttributesListConverter();
+final _accountsListConverter = AccountsListConverter();
+final _parentConverter = ParentConverter();
+final _organizationTypeConverter = OrganizationTypeConverter();
+final _fieldsListConverter = FieldsListConverter();

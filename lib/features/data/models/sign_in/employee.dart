@@ -1,6 +1,10 @@
-import 'organizations.dart';
+import 'package:floor/floor.dart';
+import 'package:mro/features/data/models/type_converter/organizations_list_type_converter.dart';
+import 'package:mro/features/data/models/sign_in/organizations.dart';
 
+@entity
 class Employee {
+  @primaryKey
   int? id;
   String? firstName;
   String? lastName;
@@ -10,7 +14,9 @@ class Employee {
   String? email;
   String? externalIdentifier;
   String? account;
-  List<Organizations>? organizations;
+
+  @TypeConverters([OrganizationsListConverter])
+  late List<Organizations> organizations;
   String? vendorCode;
   bool? isCompanyCreditCardHolder;
 
@@ -24,7 +30,7 @@ class Employee {
       this.email,
       this.externalIdentifier,
       this.account,
-      this.organizations,
+      required this.organizations,
       this.vendorCode,
       this.isCompanyCreditCardHolder});
 

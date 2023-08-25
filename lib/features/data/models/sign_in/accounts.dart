@@ -1,6 +1,10 @@
-import 'fields.dart';
+import 'package:floor/floor.dart';
+import 'package:mro/features/data/models/sign_in/fields.dart';
+import 'package:mro/features/data/models/type_converter/field_list_converter.dart';
 
+@entity
 class Accounts {
+  @primaryKey
   int? id;
   int? version;
   String? name;
@@ -12,7 +16,9 @@ class Accounts {
   bool? receiptVerifyRequired;
   String? thresholdAmount;
   bool? receiptUploadRequired;
-  List<Fields>? fields;
+
+  @TypeConverters([FieldsListConverter])
+  late List<Fields> fields;
   String? identifier;
 
   Accounts(
@@ -27,7 +33,7 @@ class Accounts {
       this.receiptVerifyRequired,
       this.thresholdAmount,
       this.receiptUploadRequired,
-      this.fields,
+      required this.fields,
       this.identifier});
 
   Accounts.fromJson(Map<String, dynamic> json) {

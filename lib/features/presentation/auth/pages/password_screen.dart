@@ -8,6 +8,7 @@ import 'package:mro/config/shared_preferences/provider/mro_shared_preference_pro
 
 import '../../../../config/constants/color_constants.dart';
 import '../../../../config/constants/string_constants.dart';
+import '../../../data/data_sources/local/database/provider/mro_database_provider.dart';
 import '../../../data/models/user_schemas/user_schemas.dart';
 import '../../../data/models/user_schemas/user_tenant_list.dart';
 import '../../../domain/repository/providers/mro_repository_provider.dart';
@@ -44,6 +45,8 @@ class _PasswordScreenState extends State<PasswordScreen> {
     final PasswordCubit passwordCubit = context.read<PasswordCubit>();
 
     Connectivity connectivity = Connectivity();
+    final database = MroDatabaseProvider.of(context).database;
+
     return Scaffold(
         body: Center(
       child: BlocConsumer<PasswordCubit, PasswordState>(
@@ -69,6 +72,8 @@ class _PasswordScreenState extends State<PasswordScreen> {
         builder: (context, state) {
           if (state is PasswordInitialState) {
             final mroRepository = MroRepositoryProvider.of(context)?.mroRepository;
+            final mroDatabase = MroDatabaseProvider.of(context).database;
+
             /*
             * This flag check if item selected from DropDown then we don't re-call the pref values and
             re-set the dropdown value
@@ -180,9 +185,11 @@ class _PasswordScreenState extends State<PasswordScreen> {
                         var schemaId = dropdownValue.id.toString();
                         await connectivity.checkConnectivity().then((value) {
                           if (value == ConnectivityResult.none) {
-                            passwordCubit.submitForm(userName, passwordController.text, schemaId, mroRepository, pref!, false);
+                            passwordCubit.submitForm(
+                                userName, passwordController.text, schemaId, mroDatabase, mroRepository!, pref!, false);
                           } else {
-                            passwordCubit.submitForm(userName, passwordController.text, schemaId, mroRepository, pref!, true);
+                            passwordCubit.submitForm(
+                                userName, passwordController.text, schemaId, mroDatabase, mroRepository!, pref!, true);
                           }
                         });
                       },

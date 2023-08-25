@@ -25,6 +25,9 @@ class AppConstants {
   static const String prefKeyUserSchema = "userSchema";
   static const String prefKeyLoginResponse = "loginResponse";
   static const String prefKeyIsBiometricEnabled = "isBiometricEnabled";
+
+  static const String prefKeyIsEmployee = "isEmployee";
+  static const String prefKeyIsisApprover = "isApprover";
   // Arguments
   static const String keyArgUserName = "arg_user_name";
 
