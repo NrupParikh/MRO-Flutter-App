@@ -24,17 +24,35 @@ abstract class MroDAO {
   Future<List<int>> insertAllOrganizations(List<Organizations> organizationsList);
 
   @Insert(onConflict: OnConflictStrategy.replace)
-  Future<List<int>> insertAllAttributes(List<Attributes> attributesList);
+  Future<int> insertOrganization(Organizations organization);
 
   @Insert(onConflict: OnConflictStrategy.replace)
-  Future<List<int>> insertAllAccounts(List<Accounts> accountsList);
+  Future<int> insertAttributes(Attributes attributes);
 
   @Insert(onConflict: OnConflictStrategy.replace)
-  Future<List<int>> insertAllFields(List<Fields> fieldsList);
+  Future<int> insertAccounts(Accounts accounts);
 
   @Insert(onConflict: OnConflictStrategy.replace)
-  Future<int> insertParent(Parent parent);
+  Future<int> insertAccountsFields(Fields fields);
+
+  @Insert(onConflict: OnConflictStrategy.replace)
+  Future<int> insertParents(Parent parent);
 
   @Insert(onConflict: OnConflictStrategy.replace)
   Future<int> insertOrganizationType(OrganizationType organizationType);
+
+// @Insert(onConflict: OnConflictStrategy.replace)
+// Future<List<int>> insertAllAttributes(List<Attributes> attributesList);
+
+// @Insert(onConflict: OnConflictStrategy.replace)
+// Future<List<int>> insertAllAccounts(List<Accounts> accountsList);
+//
+// @Insert(onConflict: OnConflictStrategy.replace)
+// Future<List<int>> insertAllFields(List<Fields> fieldsList);
+//
+// @Insert(onConflict: OnConflictStrategy.replace)
+// Future<int> insertParent(Parent parent);
+//
+// @Insert(onConflict: OnConflictStrategy.replace)
+// Future<int> insertOrganizationType(OrganizationType organizationType);
 }

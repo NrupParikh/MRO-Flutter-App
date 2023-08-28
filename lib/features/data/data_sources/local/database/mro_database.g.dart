@@ -89,17 +89,17 @@ class _$MroDatabase extends MroDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Employee` (`id` INTEGER, `firstName` TEXT, `lastName` TEXT, `middleName` TEXT, `initials` TEXT, `phone` TEXT, `email` TEXT, `externalIdentifier` TEXT, `account` TEXT, `organizations` TEXT NOT NULL, `vendorCode` TEXT, `isCompanyCreditCardHolder` INTEGER, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Organizations` (`id` INTEGER, `version` INTEGER, `name` TEXT, `externalIdentifier` TEXT, `abbreviation` TEXT, `attributes` TEXT NOT NULL, `shortDescription` TEXT, `parent` TEXT, `organizationType` TEXT, `active` INTEGER, `accounts` TEXT NOT NULL, `activatePrimaryVAT` INTEGER, `activateSecondaryVAT` INTEGER, `substituteSubValue` INTEGER, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `Organizations` (`id` INTEGER, `employeeId` INTEGER, `version` INTEGER, `name` TEXT, `externalIdentifier` TEXT, `abbreviation` TEXT, `attributes` TEXT NOT NULL, `shortDescription` TEXT, `parent` TEXT, `organizationType` TEXT, `active` INTEGER, `accounts` TEXT NOT NULL, `activatePrimaryVAT` INTEGER, `activateSecondaryVAT` INTEGER, `substituteSubValue` INTEGER, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Attributes` (`id` INTEGER, `version` INTEGER, `value` TEXT, `name` TEXT, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `Attributes` (`id` INTEGER, `organizationId` INTEGER, `version` INTEGER, `value` TEXT, `name` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Accounts` (`id` INTEGER, `version` INTEGER, `name` TEXT, `active` INTEGER, `div` TEXT, `dept` TEXT, `account` TEXT, `sub` TEXT, `receiptVerifyRequired` INTEGER, `thresholdAmount` TEXT, `receiptUploadRequired` INTEGER, `fields` TEXT NOT NULL, `identifier` TEXT, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `Accounts` (`id` INTEGER, `organizationId` INTEGER, `version` INTEGER, `name` TEXT, `active` INTEGER, `div` TEXT, `dept` TEXT, `account` TEXT, `sub` TEXT, `receiptVerifyRequired` INTEGER, `thresholdAmount` TEXT, `receiptUploadRequired` INTEGER, `fields` TEXT NOT NULL, `identifier` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Parent` (`id` INTEGER, `version` INTEGER, `name` TEXT, `externalIdentifier` TEXT, `abbreviation` TEXT, `shortDescription` TEXT, `active` INTEGER, `activatePrimaryVAT` INTEGER, `activateSecondaryVAT` INTEGER, `substituteSubValue` INTEGER, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `Fields` (`id` INTEGER, `accountsId` INTEGER, `version` INTEGER, `label` TEXT, `required` INTEGER, `sequence` REAL, `uppercase` INTEGER, `maxLength` INTEGER, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `OrganizationType` (`id` INTEGER, `code` TEXT, `name` TEXT, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `Parent` (`id` INTEGER, `organizationId` INTEGER, `version` INTEGER, `name` TEXT, `externalIdentifier` TEXT, `abbreviation` TEXT, `shortDescription` TEXT, `active` INTEGER, `activatePrimaryVAT` INTEGER, `activateSecondaryVAT` INTEGER, `substituteSubValue` INTEGER, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Fields` (`id` INTEGER, `version` INTEGER, `label` TEXT, `required` INTEGER, `sequence` REAL, `uppercase` INTEGER, `maxLength` INTEGER, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `OrganizationType` (`id` INTEGER, `organizationId` INTEGER, `code` TEXT, `name` TEXT, PRIMARY KEY (`id`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -157,6 +157,7 @@ class _$MroDAO extends MroDAO {
             'Organizations',
             (Organizations item) => <String, Object?>{
                   'id': item.id,
+                  'employeeId': item.employeeId,
                   'version': item.version,
                   'name': item.name,
                   'externalIdentifier': item.externalIdentifier,
@@ -184,6 +185,7 @@ class _$MroDAO extends MroDAO {
             'Attributes',
             (Attributes item) => <String, Object?>{
                   'id': item.id,
+                  'organizationId': item.organizationId,
                   'version': item.version,
                   'value': item.value,
                   'name': item.name
@@ -193,6 +195,7 @@ class _$MroDAO extends MroDAO {
             'Accounts',
             (Accounts item) => <String, Object?>{
                   'id': item.id,
+                  'organizationId': item.organizationId,
                   'version': item.version,
                   'name': item.name,
                   'active': item.active == null ? null : (item.active! ? 1 : 0),
@@ -215,6 +218,7 @@ class _$MroDAO extends MroDAO {
             'Fields',
             (Fields item) => <String, Object?>{
                   'id': item.id,
+                  'accountsId': item.accountsId,
                   'version': item.version,
                   'label': item.label,
                   'required':
@@ -229,6 +233,7 @@ class _$MroDAO extends MroDAO {
             'Parent',
             (Parent item) => <String, Object?>{
                   'id': item.id,
+                  'organizationId': item.organizationId,
                   'version': item.version,
                   'name': item.name,
                   'externalIdentifier': item.externalIdentifier,
@@ -250,6 +255,7 @@ class _$MroDAO extends MroDAO {
             'OrganizationType',
             (OrganizationType item) => <String, Object?>{
                   'id': item.id,
+                  'organizationId': item.organizationId,
                   'code': item.code,
                   'name': item.name
                 });
@@ -300,25 +306,31 @@ class _$MroDAO extends MroDAO {
   }
 
   @override
-  Future<List<int>> insertAllAttributes(List<Attributes> attributesList) {
-    return _attributesInsertionAdapter.insertListAndReturnIds(
-        attributesList, OnConflictStrategy.replace);
+  Future<int> insertOrganization(Organizations organization) {
+    return _organizationsInsertionAdapter.insertAndReturnId(
+        organization, OnConflictStrategy.replace);
   }
 
   @override
-  Future<List<int>> insertAllAccounts(List<Accounts> accountsList) {
-    return _accountsInsertionAdapter.insertListAndReturnIds(
-        accountsList, OnConflictStrategy.replace);
+  Future<int> insertAttributes(Attributes attributes) {
+    return _attributesInsertionAdapter.insertAndReturnId(
+        attributes, OnConflictStrategy.replace);
   }
 
   @override
-  Future<List<int>> insertAllFields(List<Fields> fieldsList) {
-    return _fieldsInsertionAdapter.insertListAndReturnIds(
-        fieldsList, OnConflictStrategy.replace);
+  Future<int> insertAccounts(Accounts accounts) {
+    return _accountsInsertionAdapter.insertAndReturnId(
+        accounts, OnConflictStrategy.replace);
   }
 
   @override
-  Future<int> insertParent(Parent parent) {
+  Future<int> insertAccountsFields(Fields fields) {
+    return _fieldsInsertionAdapter.insertAndReturnId(
+        fields, OnConflictStrategy.replace);
+  }
+
+  @override
+  Future<int> insertParents(Parent parent) {
     return _parentInsertionAdapter.insertAndReturnId(
         parent, OnConflictStrategy.replace);
   }

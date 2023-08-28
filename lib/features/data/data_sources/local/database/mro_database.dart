@@ -12,6 +12,7 @@ import 'package:mro/features/data/models/sign_in/parent.dart';
 import 'package:mro/features/data/models/type_converter/accounts_list_type_converter.dart';
 import 'package:mro/features/data/models/type_converter/attributes_list_type_converter.dart';
 import 'package:mro/features/data/models/type_converter/field_list_converter.dart';
+import 'package:mro/features/data/models/type_converter/organization_ids_type_converter.dart';
 import 'package:mro/features/data/models/type_converter/organization_type_type_converter.dart';
 import 'package:mro/features/data/models/type_converter/organizations_list_type_converter.dart';
 import 'package:mro/features/data/models/type_converter/parents_type_converter.dart';
@@ -21,7 +22,7 @@ import '../../../models/currency/currency.dart';
 
 part 'mro_database.g.dart';
 
-@Database(version: 1, entities: [Currency, Employee, Organizations, Attributes, Accounts, Parent, OrganizationType, Fields])
+@Database(version: 1, entities: [Currency, Employee, Organizations, Attributes, Accounts, Fields, Parent, OrganizationType])
 @TypeConverters([
   OrganizationsListConverter,
   AttributesListConverter,

@@ -12,6 +12,8 @@ import 'package:mro/features/data/models/type_converter/parents_type_converter.d
 class Organizations {
   @primaryKey
   int? id;
+  @ColumnInfo(name: 'employeeId')
+  int? employeeId;
   int? version;
   String? name;
   String? externalIdentifier;
@@ -22,10 +24,10 @@ class Organizations {
   String? shortDescription;
 
   @TypeConverters([ParentConverter])
-  Parent? parent;
+  late Parent? parent;
 
   @TypeConverters([OrganizationTypeConverter])
-  OrganizationType? organizationType;
+  late OrganizationType? organizationType;
   int? active;
 
   @TypeConverters([AccountsListConverter])
@@ -38,14 +40,15 @@ class Organizations {
 
   Organizations(
       {this.id,
+      required this.employeeId,
       this.version,
       this.name,
       this.externalIdentifier,
       this.abbreviation,
       required this.attributes,
       this.shortDescription,
-      this.parent,
-      this.organizationType,
+      required this.parent,
+      required this.organizationType,
       this.active,
       required this.accounts,
       this.activatePrimaryVAT,
@@ -55,6 +58,7 @@ class Organizations {
 
   Organizations.fromJson(Map<String, dynamic> json) {
     id = json['id'];
+    employeeId = json['employeeId'];
     version = json['version'];
     name = json['name'];
     externalIdentifier = json['externalIdentifier'];
@@ -66,8 +70,17 @@ class Organizations {
       });
     }
     shortDescription = json['shortDescription'];
-    parent = json['parent'] != null ? Parent.fromJson(json['parent']) : null;
-    organizationType = json['organizationType'] != null ? OrganizationType.fromJson(json['organizationType']) : null;
+    if (json['parent'] != null) {
+      parent = Parent.fromJson(json['parent']);
+    } else {
+      parent = null;
+    }
+    if (json['organizationType'] != null) {
+      organizationType = OrganizationType.fromJson(json['organizationType']);
+    } else {
+      organizationType = null;
+    }
+
     active = json['active'];
     if (json['accounts'] != null) {
       accounts = <Accounts>[];
@@ -84,6 +97,7 @@ class Organizations {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
+    data['employeeId'] = employeeId;
     data['version'] = version;
     data['name'] = name;
     data['externalIdentifier'] = externalIdentifier;

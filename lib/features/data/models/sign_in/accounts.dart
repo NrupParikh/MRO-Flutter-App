@@ -6,6 +6,8 @@ import 'package:mro/features/data/models/type_converter/field_list_converter.dar
 class Accounts {
   @primaryKey
   int? id;
+  @ColumnInfo(name: 'organizationId')
+  int? organizationId;
   int? version;
   String? name;
   bool? active;
@@ -23,6 +25,7 @@ class Accounts {
 
   Accounts(
       {this.id,
+      required this.organizationId,
       this.version,
       this.name,
       this.active,
@@ -38,6 +41,7 @@ class Accounts {
 
   Accounts.fromJson(Map<String, dynamic> json) {
     id = json['id'];
+    organizationId = json['organizationId'];
     version = json['version'];
     name = json['name'];
     active = json['active'];
@@ -60,6 +64,7 @@ class Accounts {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
+    data['organizationId'] = organizationId;
     data['version'] = version;
     data['name'] = name;
     data['active'] = active;

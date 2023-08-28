@@ -2,6 +2,13 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:mro/features/data/data_sources/local/database/mro_database.dart';
+import 'package:mro/features/data/models/sign_in/accounts.dart';
+import 'package:mro/features/data/models/sign_in/attributes.dart';
+import 'package:mro/features/data/models/sign_in/employee.dart';
+import 'package:mro/features/data/models/sign_in/fields.dart';
+import 'package:mro/features/data/models/sign_in/organization_type.dart';
+import 'package:mro/features/data/models/sign_in/organizations.dart';
+import 'package:mro/features/data/models/sign_in/parent.dart';
 import 'package:mro/features/domain/repository/singleton/mro_repository.dart';
 
 import '../../../config/constants/app_constants.dart';
@@ -24,49 +31,134 @@ Future<void> storeLoginResponse(String userName, String schemaId, MroDatabase mr
   pref.setBool(AppConstants.prefKeyIsEmployee, isEmployee!);
   pref.setBool(AppConstants.prefKeyIsisApprover, isApprover!);
 
-  // Storing employee data in the database
   var employeeData = data.employee;
+  await doDatabaseEntry(employeeData, mroDatabase);
+}
+
+Future<void> doDatabaseEntry(Employee? employeeData, MroDatabase mroDatabase) async {
   if (employeeData != null) {
-    // Storing Employee
+    // ====================== STORE EMPLOYEE DATA
     var rowsAffected = await mroDatabase.mroDao.insertEmployee(employeeData);
     if (rowsAffected > 0) {
       debugPrint('TAG_Insertion successful for Employee. $rowsAffected rows inserted.');
-      // Storing Organizations
-      var rowAffectedForOrganizations = await mroDatabase.mroDao.insertAllOrganizations(employeeData.organizations);
-      debugPrint('TAG_Insertion successful for Organizations. $rowAffectedForOrganizations rows inserted.');
-      if (rowAffectedForOrganizations.isNotEmpty) {
-        var apiOrganization = data.employee?.organizations;
-        if (apiOrganization!.isNotEmpty) {
-          for (var i = 0; i < apiOrganization.length; i++) {
-            // Storing Attributes
-            var rowAffectedForAttributes = await mroDatabase.mroDao.insertAllAttributes(apiOrganization[i].attributes);
-            debugPrint('TAG_Insertion successful for Attributes. $rowAffectedForAttributes rows inserted.');
 
-            // Storing Accounts
-            var rowAffectedForAccounts = await mroDatabase.mroDao.insertAllAccounts(apiOrganization[i].accounts);
-            debugPrint('TAG_Insertion successful for Accounts. $rowAffectedForAccounts rows inserted.');
+      // ====================== STORE ORGANIZATION DATA
+      if (employeeData.organizations.isNotEmpty) {
+        for (var i = 0; i < employeeData.organizations.length; i++) {
+          var organizationData = employeeData.organizations[i];
+          var rowAffectedForOrganizations = await mroDatabase.mroDao.insertOrganization(Organizations(
+              id: organizationData.id,
+              employeeId: employeeData.id,
+              version: organizationData.version,
+              name: organizationData.name,
+              externalIdentifier: organizationData.externalIdentifier,
+              attributes: organizationData.attributes,
+              abbreviation: organizationData.abbreviation,
+              shortDescription: organizationData.shortDescription,
+              parent: organizationData.parent,
+              organizationType: organizationData.organizationType,
+              active: organizationData.active,
+              accounts: organizationData.accounts,
+              activatePrimaryVAT: organizationData.activatePrimaryVAT,
+              activateSecondaryVAT: organizationData.activateSecondaryVAT,
+              substituteSubValue: organizationData.substituteSubValue));
 
-            if (rowAffectedForAccounts.isNotEmpty) {
-              var apiAccounts = apiOrganization[i].accounts;
-              if (apiAccounts.isNotEmpty) {
-                for (var j = 0; j < apiAccounts.length; j++) {
-                  // Storing Account's Fields
-                  var rowAffectedForFields = await mroDatabase.mroDao.insertAllFields(apiAccounts[j].fields);
-                  debugPrint('TAG_Insertion successful for Fields. $rowAffectedForFields rows inserted.');
+          debugPrint('TAG_Insertion successful for Organizations. $rowAffectedForOrganizations rows inserted.');
+
+          if (rowAffectedForOrganizations > 0) {
+            // ====================== STORE ATTRIBUTES DATA
+
+            var attributes = organizationData.attributes;
+            if (attributes.isNotEmpty) {
+              for (var j = 0; j < attributes.length; j++) {
+                var attributesData = attributes[j];
+                var rowAffectedForAttributes = await mroDatabase.mroDao.insertAttributes(Attributes(
+                  id: attributesData.id,
+                  organizationId: organizationData.id,
+                  version: attributesData.version,
+                  value: attributesData.value,
+                  name: attributesData.name,
+                ));
+                debugPrint('TAG_Insertion successful for Attributes. $rowAffectedForAttributes rows inserted.');
+              }
+            }
+
+            // ====================== STORE ACCOUNTS DATA
+
+            var accounts = organizationData.accounts;
+            if (accounts.isNotEmpty) {
+              for (var k = 0; k < accounts.length; k++) {
+                var accountsData = accounts[k];
+                var rowAffectedForAccounts = await mroDatabase.mroDao.insertAccounts(Accounts(
+                  id: accountsData.id,
+                  organizationId: organizationData.id,
+                  version: accountsData.version,
+                  name: accountsData.name,
+                  active: accountsData.active,
+                  div: accountsData.div,
+                  dept: accountsData.dept,
+                  account: accountsData.account,
+                  sub: accountsData.sub,
+                  receiptVerifyRequired: accountsData.receiptVerifyRequired,
+                  receiptUploadRequired: accountsData.receiptUploadRequired,
+                  fields: accountsData.fields,
+                ));
+
+                debugPrint('TAG_Insertion successful for Accounts. $rowAffectedForAccounts rows inserted.');
+
+                if (rowAffectedForAccounts > 0) {
+                  // ====================== STORE ACCOUNTS FIELD DATA
+
+                  var fields = accountsData.fields;
+                  if (fields.isNotEmpty) {
+                    for (var l = 0; l < fields.length; l++) {
+                      var fieldsData = fields[l];
+                      var rowAffectedForAccountsField = await mroDatabase.mroDao.insertAccountsFields(Fields(
+                          id: fieldsData.id,
+                          accountsId: accountsData.id,
+                          version: fieldsData.version,
+                          label: fieldsData.label,
+                          required: fieldsData.required,
+                          sequence: fieldsData.sequence,
+                          uppercase: fieldsData.uppercase,
+                          maxLength: fieldsData.maxLength));
+
+                      debugPrint('TAG_Insertion successful for Accounts Fields. $rowAffectedForAccountsField rows inserted.');
+                    }
+                  }
                 }
               }
             }
 
-            // Storing Parent
-            if (apiOrganization[i].parent != null) {
-              var rowAffectedForParent = await mroDatabase.mroDao.insertParent(apiOrganization[i].parent!);
-              debugPrint('TAG_Insertion successful for Parent. $rowAffectedForParent rows inserted.');
+            // ====================== STORE PARENTS DATA
+            var parents = organizationData.parent;
+            if (parents != null) {
+              var rowAffectedForParent = await mroDatabase.mroDao.insertParents(Parent(
+                  id: parents.id,
+                  organizationId: organizationData.id,
+                  version: parents.version,
+                  name: parents.name,
+                  externalIdentifier: parents.externalIdentifier,
+                  abbreviation: parents.abbreviation,
+                  shortDescription: parents.shortDescription,
+                  active: parents.active,
+                  activatePrimaryVAT: parents.activatePrimaryVAT,
+                  activateSecondaryVAT: parents.activateSecondaryVAT,
+                  substituteSubValue: parents.substituteSubValue));
+
+              debugPrint('TAG_Insertion successful for Parent Fields. $rowAffectedForParent rows inserted.');
             }
 
-            // Storing Organization Type
-            if (apiOrganization[i].organizationType != null) {
-              var rowAffectedForParent = await mroDatabase.mroDao.insertOrganizationType(apiOrganization[i].organizationType!);
-              debugPrint('TAG_Insertion successful for Organization Type. $rowAffectedForParent rows inserted.');
+            // ====================== STORE ORGANIZATION TYPE DATA
+            var organizationType = organizationData.organizationType;
+            if (organizationType != null) {
+              var rowAffectedForOrganizationType = await mroDatabase.mroDao.insertOrganizationType(OrganizationType(
+                  id: organizationType.id,
+                  organizationId: organizationData.id,
+                  code: organizationType.code,
+                  name: organizationType.name));
+
+              debugPrint('TAG_Insertion successful for OrganizationType Fields. $rowAffectedForOrganizationType rows inserted.');
             }
           }
         }
