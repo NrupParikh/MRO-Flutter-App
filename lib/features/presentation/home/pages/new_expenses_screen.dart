@@ -1,6 +1,7 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mro/features/presentation/home/bloc/new_expense/new_expense_cubit.dart';
 import 'package:mro/features/presentation/home/bloc/new_expense/new_expense_state.dart';
 
@@ -193,11 +194,16 @@ class _NewExpensesScreenState extends State<NewExpensesScreen> {
                                     padding: const EdgeInsets.only(right: 8),
                                     child: Align(
                                       alignment: Alignment.centerRight,
-                                      child: Image.asset(
-                                        "assets/images/ic_camera.png",
-                                        width: 48,
-                                        height: 48,
-                                        color: ColorConstants.blueThemeColor,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          showChooseOptionDialog(context);
+                                        },
+                                        child: Image.asset(
+                                          "assets/images/ic_camera.png",
+                                          width: 48,
+                                          height: 48,
+                                          color: ColorConstants.blueThemeColor,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -543,4 +549,29 @@ class OrganizationDropDown {
   String? name;
 
   OrganizationDropDown(this.id, this.name);
+}
+
+// Choose Option Dialog
+
+void showChooseOptionDialog(BuildContext context) {
+  var dialog = ChooseOptionDialog(
+    takeAPhoto: () {
+      Fluttertoast.showToast(msg: "Take a Photo");
+      Navigator.of(context, rootNavigator: true).pop();
+    },
+    chooseFromGallery: () {
+      Fluttertoast.showToast(msg: "Choose From Gallery");
+      Navigator.of(context, rootNavigator: true).pop();
+    },
+    chooseDocument: () {
+      Fluttertoast.showToast(msg: "Choose Document");
+      Navigator.of(context, rootNavigator: true).pop();
+    },
+    onCancelButtonPressed: () {
+      Fluttertoast.showToast(msg: "Cancel");
+      Navigator.of(context, rootNavigator: true).pop();
+    },
+  );
+
+  showDialog(context: context, barrierDismissible: false, builder: (BuildContext context) => dialog);
 }

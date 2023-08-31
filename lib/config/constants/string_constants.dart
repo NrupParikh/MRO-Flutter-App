@@ -1,7 +1,6 @@
 class StringConstants {
   static const String appFullName = "My Receipt Online";
-  static const String msgPasswordResetSuccess =
-      "An email with password reset instruction has been sent to you.";
+  static const String msgPasswordResetSuccess = "An email with password reset instruction has been sent to you.";
   static const String loginWithCredentials = "Login with credentials";
   static const String loginWithBioMetric = "Login with biometric";
 
@@ -38,6 +37,13 @@ class StringConstants {
   static const String radioButtonLblCreditCard = "Company Credit Card";
   static const String radioButtonLblPersonal = "Personal";
 
+  // Choose Option Dialog
+  static const String chooseOption = "Choose Option";
+  static const String optionTakeAPhoto = "Take a Photo";
+  static const String optionChooseFromGallery = "Choose from Gallery";
+  static const String optionChooseDocument = "Choose Document";
+  static const String optionCancel = "Cancel";
+
   // =========== TAB
   static const String tabDraft = "Draft";
   static const String tabPendingUpload = "Pending Upload";
@@ -46,16 +52,11 @@ class StringConstants {
 
   // =========== BIOMETRIC
   static const String localizedReason = "Please authenticate";
-  static const String notEnrolled =
-      "The user has not enrolled any biometrics on the device.";
-  static const String lockedOut =
-      "The API is temporarily locked out due to too many attempts.";
-  static const String biometricOnlyNotSupported =
-      "The biometric Only parameter can't be true on Windows.";
-  static const String notAvailable =
-      "The device does not have hardware support for biometrics or no biometric are added.";
-  static const String otherOperatingSystem =
-      "The device operating system is unsupported.";
+  static const String notEnrolled = "The user has not enrolled any biometrics on the device.";
+  static const String lockedOut = "The API is temporarily locked out due to too many attempts.";
+  static const String biometricOnlyNotSupported = "The biometric Only parameter can't be true on Windows.";
+  static const String notAvailable = "The device does not have hardware support for biometrics or no biometric are added.";
+  static const String otherOperatingSystem = "The device operating system is unsupported.";
   static const String passcodeNotSet =
       "The user has not yet configured a passcode (iOS) or PIN/pattern/password (Android) on the device.";
   static const String permanentlyLockedOut =
@@ -69,7 +70,6 @@ class StringConstants {
   static const String mgsNoInternet = "Please check your internet connection.";
   static const String msgConnectionTimeOut = "Connection timeout occurred";
   static const String msgUnknownError = "Unknown error occurred";
-  static const String msgLogoutConfirmation =
-      "Are you sure you want to Log Out of MRO?";
+  static const String msgLogoutConfirmation = "Are you sure you want to Log Out of MRO?";
   static const String expenseStatus = "Status:";
 }

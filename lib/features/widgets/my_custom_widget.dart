@@ -118,3 +118,81 @@ void noInternetMessage(BuildContext context) {
     ),
   );
 }
+
+// ========= Choose Option Dialog
+
+class ChooseOptionDialog extends StatelessWidget {
+  final VoidCallback takeAPhoto;
+  final VoidCallback chooseFromGallery;
+  final VoidCallback chooseDocument;
+  final VoidCallback onCancelButtonPressed;
+
+  const ChooseOptionDialog(
+      {super.key,
+      required this.takeAPhoto,
+      required this.chooseFromGallery,
+      required this.chooseDocument,
+      required this.onCancelButtonPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text(
+        StringConstants.chooseOption,
+        style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20),
+      ),
+      backgroundColor: Colors.white,
+      elevation: 0,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextButton(
+              onPressed: takeAPhoto,
+              style: TextButton.styleFrom(
+                minimumSize: Size.zero,
+                padding: const EdgeInsets.all(4),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              child: const Text(
+                StringConstants.optionTakeAPhoto,
+                style: TextStyle(color: Colors.black54, fontSize: 16),
+              )),
+          TextButton(
+              onPressed: chooseFromGallery,
+              style: TextButton.styleFrom(
+                minimumSize: Size.zero,
+                padding: const EdgeInsets.all(4),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              child: const Text(
+                StringConstants.optionChooseFromGallery,
+                style: TextStyle(color: Colors.black54, fontSize: 16),
+              )),
+          TextButton(
+              onPressed: chooseDocument,
+              style: TextButton.styleFrom(
+                minimumSize: Size.zero,
+                padding: const EdgeInsets.all(4),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              child: const Text(
+                StringConstants.optionChooseDocument,
+                style: TextStyle(color: Colors.black54, fontSize: 16),
+              )),
+          TextButton(
+              onPressed: onCancelButtonPressed,
+              style: TextButton.styleFrom(
+                minimumSize: Size.zero,
+                padding: const EdgeInsets.all(4),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              child: const Text(
+                StringConstants.optionCancel,
+                style: TextStyle(color: Colors.black54, fontSize: 16),
+              )),
+        ],
+      ),
+    );
+  }
+}
