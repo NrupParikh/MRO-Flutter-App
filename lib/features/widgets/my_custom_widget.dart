@@ -8,13 +8,21 @@ class CustomElevatedButton extends StatelessWidget {
   final String buttonText;
   final VoidCallback onPressed;
   final Color buttonBgColor;
+  final double leftPadding;
+  final double rightPadding;
 
-  const CustomElevatedButton({super.key, required this.buttonText, required this.onPressed, required this.buttonBgColor});
+  const CustomElevatedButton(
+      {super.key,
+      required this.buttonText,
+      required this.onPressed,
+      required this.buttonBgColor,
+      required this.leftPadding,
+      required this.rightPadding});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 32, right: 32),
+      padding: EdgeInsets.only(left: leftPadding, right: rightPadding),
       child: SizedBox(
         width: double.infinity,
         child: ElevatedButton(

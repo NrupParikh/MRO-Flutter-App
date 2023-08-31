@@ -62,7 +62,12 @@ class _LoginScreenState extends State<LoginScreen> {
             // Getting Access of Mro Repository singleton instance
             final mroRepository = MroRepositoryProvider.of(context)?.mroRepository;
 
-            return LoginScreenUI(userNameController: userNameController, connectivity: connectivity, logInCubit: logInCubit, mroRepository: mroRepository, pref: pref);
+            return LoginScreenUI(
+                userNameController: userNameController,
+                connectivity: connectivity,
+                logInCubit: logInCubit,
+                mroRepository: mroRepository,
+                pref: pref);
           } else {
             return const Center(child: Text('Unknown state'));
           }
@@ -152,7 +157,9 @@ class LoginScreenUI extends StatelessWidget {
                   }
                 });
               },
-              buttonBgColor: ColorConstants.blueThemeColor),
+              buttonBgColor: ColorConstants.blueThemeColor,
+              leftPadding: 32,
+              rightPadding: 32),
           const SizedBox(
             height: 16,
           ),
@@ -163,7 +170,9 @@ class LoginScreenUI extends StatelessWidget {
                 onPressed: () {
                   Navigator.pushNamed(context, AppConstants.routePasswordReset);
                 },
-                buttonBgColor: Colors.red),
+                buttonBgColor: Colors.red,
+                leftPadding: 32,
+                rightPadding: 32),
           ),
         ],
       ),

@@ -57,7 +57,8 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                   Navigator.pushNamed(context, AppConstants.routePasswordResetSchemaSelection,
                       arguments: {AppConstants.keyArgUserName: userNameController.text});
                 } else {
-                  passwordResetCubit.callResetPasswordAPI(userNameController.text, tenantList.first.id.toString(), mroRepository!);
+                  passwordResetCubit.callResetPasswordAPI(
+                      userNameController.text, tenantList.first.id.toString(), mroRepository!);
                 }
               } else if (state is PasswordResetFinalSuccessState) {
                 hideLoading(_dialogKey);
@@ -75,7 +76,12 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
             builder: (context, state) {
               if (state is PasswordResetInitialState) {
                 final mroRepository = MroRepositoryProvider.of(context)?.mroRepository;
-                return PasswordResetScreenUI(userNameController: userNameController, connectivity: connectivity, passwordResetCubit: passwordResetCubit, mroRepository: mroRepository, pref: pref);
+                return PasswordResetScreenUI(
+                    userNameController: userNameController,
+                    connectivity: connectivity,
+                    passwordResetCubit: passwordResetCubit,
+                    mroRepository: mroRepository,
+                    pref: pref);
               } else {
                 return const Center(child: Text('Unknown state'));
               }
@@ -170,7 +176,9 @@ class PasswordResetScreenUI extends StatelessWidget {
                   }
                 });
               },
-              buttonBgColor: ColorConstants.blueThemeColor)
+              buttonBgColor: ColorConstants.blueThemeColor,
+              leftPadding: 32,
+              rightPadding: 32)
         ],
       ),
     );

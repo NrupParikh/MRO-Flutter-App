@@ -39,8 +39,8 @@ class _LandingScreenState extends State<LandingScreen> {
 
   // // ================== BIOMETRIC AUTHENTICATION
 
-  Future<void> authenticate(Connectivity connectivity, BiometricAuthCubit biometricAuthCubit, MroDatabase mroDatabase,MroRepository? mroRepository,
-      MroSharedPreference pref) async {
+  Future<void> authenticate(Connectivity connectivity, BiometricAuthCubit biometricAuthCubit, MroDatabase mroDatabase,
+      MroRepository? mroRepository, MroSharedPreference pref) async {
     try {
       final bool didAuthenticate = await auth.authenticate(
           localizedReason: "Please authenticate", options: const AuthenticationOptions(stickyAuth: true, biometricOnly: true));
@@ -132,6 +132,8 @@ class _LandingScreenState extends State<LandingScreen> {
                       Navigator.pushNamed(context, AppConstants.routeLogin);
                     },
                     buttonBgColor: ColorConstants.blueThemeColor,
+                    leftPadding: 32,
+                    rightPadding: 32
                   ),
                   if (isBiometricEnabled == true) ...[
                     const SizedBox(
@@ -146,7 +148,9 @@ class _LandingScreenState extends State<LandingScreen> {
                         onPressed: () {
                           authenticate(connectivity, biometricAuthCubit, mroDatabase, mroRepository, pref!);
                         },
-                        buttonBgColor: ColorConstants.blueThemeColor)
+                        buttonBgColor: ColorConstants.blueThemeColor,
+                        leftPadding: 32,
+                        rightPadding: 32)
                   ]
                 ],
               ),

@@ -51,133 +51,135 @@ class _PasswordResetSchemaSelectionScreenState extends State<PasswordResetSchema
           backgroundColor: ColorConstants.blueThemeColor,
         ),
         body: Center(
-      child: BlocConsumer<PasswordResetSchemaSelectionCubit, PasswordResetSchemaSelectionState>(
-        listenWhen: (context, state) {
-          return state is PasswordResetSchemaStateSuccessState ||
-              state is PasswordResetSchemaStateFailureState ||
-              state is LoadingState;
-        },
-        listener: (context, state) {
-          if (state is PasswordResetSchemaStateSuccessState) {
-            hideLoading(_dialogKey);
-            displayDialog(context, StringConstants.msgPasswordResetSuccess, true);
-          } else if (state is PasswordResetSchemaStateFailureState) {
-            hideLoading(_dialogKey);
-            displayDialog(context, state.passwordResetSchemaErrorMessage, false);
-          } else if (state is LoadingState) {
-            showLoading(context, _dialogKey);
-          }
-        },
-        buildWhen: (context, state) {
-          return state is PasswordResetSchemaStateInitialState;
-        },
-        builder: (context, state) {
-          if (state is PasswordResetSchemaStateInitialState) {
-            final mroRepository = MroRepositoryProvider.of(context)?.mroRepository;
-            /*
+          child: BlocConsumer<PasswordResetSchemaSelectionCubit, PasswordResetSchemaSelectionState>(
+            listenWhen: (context, state) {
+              return state is PasswordResetSchemaStateSuccessState ||
+                  state is PasswordResetSchemaStateFailureState ||
+                  state is LoadingState;
+            },
+            listener: (context, state) {
+              if (state is PasswordResetSchemaStateSuccessState) {
+                hideLoading(_dialogKey);
+                displayDialog(context, StringConstants.msgPasswordResetSuccess, true);
+              } else if (state is PasswordResetSchemaStateFailureState) {
+                hideLoading(_dialogKey);
+                displayDialog(context, state.passwordResetSchemaErrorMessage, false);
+              } else if (state is LoadingState) {
+                showLoading(context, _dialogKey);
+              }
+            },
+            buildWhen: (context, state) {
+              return state is PasswordResetSchemaStateInitialState;
+            },
+            builder: (context, state) {
+              if (state is PasswordResetSchemaStateInitialState) {
+                final mroRepository = MroRepositoryProvider.of(context)?.mroRepository;
+                /*
             * This flag check if item selected from DropDown then we don't re-call the pref values and
             re-set the dropdown value
             */
-            if (isDropDownSelected == false) {
-              var userSchema = pref?.getString(AppConstants.prefKeyUserSchema);
-              if (userSchema != null) {
-                Map<String, dynamic> decodedPerson = json.decode(userSchema);
-                UserSchemas userSchemas = UserSchemas.fromJson(decodedPerson);
-                if (userSchemas.success == true) {
-                  List<UserTenantList>? userTenantList = userSchemas.userTenantList;
-                  list.clear();
-                  for (int i = 0; i < userTenantList!.length; i++) {
-                    debugPrint("TAG_Tenant_Schema ${userTenantList[i].schemaName}");
-                    debugPrint("TAG_Tenant_Name ${userTenantList[i].name}");
-                    list.add(userTenantList[i]);
+                if (isDropDownSelected == false) {
+                  var userSchema = pref?.getString(AppConstants.prefKeyUserSchema);
+                  if (userSchema != null) {
+                    Map<String, dynamic> decodedPerson = json.decode(userSchema);
+                    UserSchemas userSchemas = UserSchemas.fromJson(decodedPerson);
+                    if (userSchemas.success == true) {
+                      List<UserTenantList>? userTenantList = userSchemas.userTenantList;
+                      list.clear();
+                      for (int i = 0; i < userTenantList!.length; i++) {
+                        debugPrint("TAG_Tenant_Schema ${userTenantList[i].schemaName}");
+                        debugPrint("TAG_Tenant_Name ${userTenantList[i].name}");
+                        list.add(userTenantList[i]);
+                      }
+                      dropdownValue = list.first;
+                    }
                   }
-                  dropdownValue = list.first;
                 }
-              }
-            }
 
-            // =========== DRAW UI
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  const SizedBox(
-                    height: 48,
-                  ),
-                  const ScanItLogoImage(),
-                  const SizedBox(
-                    height: 48,
-                  ),
-                  if (list.length > 1) ...[
-                    const SizedBox(
-                      height: 24,
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(left: 32, right: 32),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          StringConstants.selectSchema,
-                          style: TextStyle(color: Colors.black),
-                        ),
+                // =========== DRAW UI
+                return SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      const SizedBox(
+                        height: 48,
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 32, right: 32),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton<UserTenantList>(
-                            isExpanded: true,
-                            // Full width
-                            value: dropdownValue,
-                            style: const TextStyle(color: Colors.black),
-                            underline: Container(
-                              height: 2,
-                              color: Colors.black,
+                      const ScanItLogoImage(),
+                      const SizedBox(
+                        height: 48,
+                      ),
+                      if (list.length > 1) ...[
+                        const SizedBox(
+                          height: 24,
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.only(left: 32, right: 32),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              StringConstants.selectSchema,
+                              style: TextStyle(color: Colors.black),
                             ),
-                            items: list.map<DropdownMenuItem<UserTenantList>>((UserTenantList value) {
-                              return DropdownMenuItem<UserTenantList>(
-                                value: value,
-                                child: Text(value.name.toString()),
-                              );
-                            }).toList(),
-                            onChanged: (UserTenantList? value) {
-                              // This is called when the user selects an item.
-                              setState(() {
-                                dropdownValue = value!;
-                                isDropDownSelected = true;
-                              });
-                            },
                           ),
                         ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 32, right: 32),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: DropdownButtonHideUnderline(
+                              child: DropdownButton<UserTenantList>(
+                                isExpanded: true,
+                                // Full width
+                                value: dropdownValue,
+                                style: const TextStyle(color: Colors.black),
+                                underline: Container(
+                                  height: 2,
+                                  color: Colors.black,
+                                ),
+                                items: list.map<DropdownMenuItem<UserTenantList>>((UserTenantList value) {
+                                  return DropdownMenuItem<UserTenantList>(
+                                    value: value,
+                                    child: Text(value.name.toString()),
+                                  );
+                                }).toList(),
+                                onChanged: (UserTenantList? value) {
+                                  // This is called when the user selects an item.
+                                  setState(() {
+                                    dropdownValue = value!;
+                                    isDropDownSelected = true;
+                                  });
+                                },
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                      const SizedBox(
+                        height: 8,
                       ),
-                    )
-                  ],
-                  const SizedBox(
-                    height: 8,
+                      CustomElevatedButton(
+                          buttonText: StringConstants.next.toUpperCase(),
+                          onPressed: () async {
+                            var schemaId = dropdownValue.id.toString();
+                            await connectivity.checkConnectivity().then((value) {
+                              if (value == ConnectivityResult.none) {
+                                passwordCubit.submitForm(userName, schemaId, mroRepository!, pref!, false);
+                              } else {
+                                passwordCubit.submitForm(userName, schemaId, mroRepository!, pref!, true);
+                              }
+                            });
+                          },
+                          buttonBgColor: ColorConstants.blueThemeColor,
+                          leftPadding: 32,
+                          rightPadding: 32),
+                    ],
                   ),
-                  CustomElevatedButton(
-                      buttonText: StringConstants.next.toUpperCase(),
-                      onPressed: () async {
-                        var schemaId = dropdownValue.id.toString();
-                        await connectivity.checkConnectivity().then((value) {
-                          if (value == ConnectivityResult.none) {
-                            passwordCubit.submitForm(userName, schemaId, mroRepository!, pref!, false);
-                          } else {
-                            passwordCubit.submitForm(userName, schemaId, mroRepository!, pref!, true);
-                          }
-                        });
-                      },
-                      buttonBgColor: ColorConstants.blueThemeColor),
-                ],
-              ),
-            );
-          } else {
-            return const Center(child: Text('Unknown state'));
-          }
-        },
-      ),
-    ));
+                );
+              } else {
+                return const Center(child: Text('Unknown state'));
+              }
+            },
+          ),
+        ));
   }
 
   void displayDialog(BuildContext context, String message, bool isSuccess) {
@@ -187,7 +189,7 @@ class _PasswordResetSchemaSelectionScreenState extends State<PasswordResetSchema
       onOkButtonPressed: () {
         if (isSuccess) {
           // Dismiss dialog and go back screen
-          Navigator.popUntil(context, ModalRoute.withName(AppConstants.routeLogin) );
+          Navigator.popUntil(context, ModalRoute.withName(AppConstants.routeLogin));
         } else {
           Navigator.of(context, rootNavigator: true).pop();
         }

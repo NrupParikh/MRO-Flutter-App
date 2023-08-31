@@ -8,12 +8,22 @@ class StringConstants {
   static const String userName = "User Name";
   static const String passwordReset = "Password Reset";
   static const String next = "Next";
+  static const String save = "Save";
   static const String password = "Password";
   static const String login = "Login";
   static const String selectSchema = "Select schema";
+  static const String organization = "Organization";
+  static const String expenseDate = "Expense Date";
+  static const String expenseAmount = "Expense Amount";
+  static const String vat1Amount = "VAT1 Amount";
+  static const String vat2Amount = "VAT2 Amount";
+  static const String totalOfVAT1andVAT2 = "Total Amount incl. VAT1 and VAT2";
+  static const String account = "Account";
 
   static const String hintEnterUserName = "Enter User Name";
   static const String hintEnterPassword = "Enter Password";
+  static const String hintSelectExpenseDate = "Select Expense Date";
+  static const String hintEnterAmount = "Enter Amount";
 
   static const String newExpense = "New Expense";
   static const String addExpense = "Add Expense";
@@ -25,6 +35,8 @@ class StringConstants {
   static const String syncMessage = "Sync MRO";
   static const String modify = "Modify";
   static const String or = "Or";
+  static const String radioButtonLblCreditCard = "Company Credit Card";
+  static const String radioButtonLblPersonal = "Personal";
 
   // =========== TAB
   static const String tabDraft = "Draft";

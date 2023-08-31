@@ -194,20 +194,23 @@ class _PasswordScreenState extends State<PasswordScreen> {
                     height: 8,
                   ),
                   CustomElevatedButton(
-                      buttonText: StringConstants.login.toUpperCase(),
-                      onPressed: () async {
-                        var schemaId = dropdownValue.id.toString();
-                        await connectivity.checkConnectivity().then((value) {
-                          if (value == ConnectivityResult.none) {
-                            passwordCubit.submitForm(
-                                userName, passwordController.text, schemaId, mroDatabase, mroRepository!, pref!, false);
-                          } else {
-                            passwordCubit.submitForm(
-                                userName, passwordController.text, schemaId, mroDatabase, mroRepository!, pref!, true);
-                          }
-                        });
-                      },
-                      buttonBgColor: ColorConstants.blueThemeColor),
+                    buttonText: StringConstants.login.toUpperCase(),
+                    onPressed: () async {
+                      var schemaId = dropdownValue.id.toString();
+                      await connectivity.checkConnectivity().then((value) {
+                        if (value == ConnectivityResult.none) {
+                          passwordCubit.submitForm(
+                              userName, passwordController.text, schemaId, mroDatabase, mroRepository!, pref!, false);
+                        } else {
+                          passwordCubit.submitForm(
+                              userName, passwordController.text, schemaId, mroDatabase, mroRepository!, pref!, true);
+                        }
+                      });
+                    },
+                    buttonBgColor: ColorConstants.blueThemeColor,
+                    leftPadding: 32,
+                    rightPadding: 32,
+                  ),
                 ],
               ),
             );
