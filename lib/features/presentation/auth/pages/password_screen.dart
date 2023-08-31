@@ -17,7 +17,6 @@ import '../bloc/password/password_cubit.dart';
 import '../bloc/password/password_state.dart';
 
 GlobalKey<State> _dialogKey = GlobalKey<State>();
-List<UserTenantList> list = <UserTenantList>[];
 
 class PasswordScreen extends StatefulWidget {
   const PasswordScreen({super.key});
@@ -28,8 +27,23 @@ class PasswordScreen extends StatefulWidget {
 
 class _PasswordScreenState extends State<PasswordScreen> {
   TextEditingController passwordController = TextEditingController();
+  late List<UserTenantList> list;
+  late bool isDropDownSelected;
   late UserTenantList dropdownValue;
-  bool isDropDownSelected = false;
+
+  @override
+  void initState() {
+    super.initState();
+    list = <UserTenantList>[];
+    isDropDownSelected = false;
+    debugPrint("TAG_initState");
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    debugPrint("TAG_disposeState");
+  }
 
   @override
   Widget build(BuildContext context) {

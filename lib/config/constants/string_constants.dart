@@ -16,6 +16,7 @@ class StringConstants {
   static const String hintEnterPassword = "Enter Password";
 
   static const String newExpense = "New Expense";
+  static const String addExpense = "Add Expense";
   static const String archive = "Archive";
   static const String myApproval = "My Approval";
   static const String settings = "Settings";

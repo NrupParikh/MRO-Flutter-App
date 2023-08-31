@@ -24,10 +24,10 @@ class Organizations {
   String? shortDescription;
 
   @TypeConverters([ParentConverter])
-  late Parent? parent;
+  Parent? parent;
 
   @TypeConverters([OrganizationTypeConverter])
-  late OrganizationType? organizationType;
+  OrganizationType? organizationType;
   int? active;
 
   @TypeConverters([AccountsListConverter])
@@ -47,8 +47,8 @@ class Organizations {
       this.abbreviation,
       required this.attributes,
       this.shortDescription,
-      required this.parent,
-      required this.organizationType,
+      this.parent,
+      this.organizationType,
       this.active,
       required this.accounts,
       this.activatePrimaryVAT,

@@ -117,7 +117,8 @@ class _$MroDAO extends MroDAO {
   _$MroDAO(
     this.database,
     this.changeListener,
-  )   : _currencyInsertionAdapter = InsertionAdapter(
+  )   : _queryAdapter = QueryAdapter(database),
+        _currencyInsertionAdapter = InsertionAdapter(
             database,
             'Currency',
             (Currency item) => <String, Object?>{
@@ -264,6 +265,8 @@ class _$MroDAO extends MroDAO {
 
   final StreamController<String> changeListener;
 
+  final QueryAdapter _queryAdapter;
+
   final InsertionAdapter<Currency> _currencyInsertionAdapter;
 
   final InsertionAdapter<Employee> _employeeInsertionAdapter;
@@ -279,6 +282,37 @@ class _$MroDAO extends MroDAO {
   final InsertionAdapter<Parent> _parentInsertionAdapter;
 
   final InsertionAdapter<OrganizationType> _organizationTypeInsertionAdapter;
+
+  @override
+  Future<List<Organizations>> getOrganizations(int id) async {
+    return _queryAdapter.queryList(
+        'select * from Organizations where employeeId= ?1',
+        mapper: (Map<String, Object?> row) => Organizations(
+            id: row['id'] as int?,
+            employeeId: row['employeeId'] as int?,
+            version: row['version'] as int?,
+            name: row['name'] as String?,
+            externalIdentifier: row['externalIdentifier'] as String?,
+            abbreviation: row['abbreviation'] as String?,
+            attributes:
+                _attributesListConverter.decode(row['attributes'] as String),
+            shortDescription: row['shortDescription'] as String?,
+            parent: _parentConverter.decode(row['parent'] as String),
+            organizationType: _organizationTypeConverter
+                .decode(row['organizationType'] as String),
+            active: row['active'] as int?,
+            accounts: _accountsListConverter.decode(row['accounts'] as String),
+            activatePrimaryVAT: row['activatePrimaryVAT'] == null
+                ? null
+                : (row['activatePrimaryVAT'] as int) != 0,
+            activateSecondaryVAT: row['activateSecondaryVAT'] == null
+                ? null
+                : (row['activateSecondaryVAT'] as int) != 0,
+            substituteSubValue: row['substituteSubValue'] == null
+                ? null
+                : (row['substituteSubValue'] as int) != 0),
+        arguments: [id]);
+  }
 
   @override
   Future<void> insertCurrency(Currency currency) async {

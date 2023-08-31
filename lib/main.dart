@@ -12,6 +12,7 @@ import 'package:mro/features/presentation/auth/bloc/password_reset_schema_select
 import 'package:mro/features/presentation/auth/pages/password_reset_schema_selection_screen.dart';
 import 'package:mro/features/presentation/home/bloc/get_currency/get_currency_cubit.dart';
 import 'package:mro/features/presentation/home/bloc/get_expense_list/GetExpenseListCubit.dart';
+import 'package:mro/features/presentation/home/bloc/new_expense/new_expense_cubit.dart';
 
 import 'config/shared_preferences/singleton/mro_shared_preference.dart';
 import 'features/domain/api/providers/api_provider.dart';
@@ -103,7 +104,9 @@ class _MyAppState extends State<MyApp> {
                     create: (context) => PasswordResetSchemaSelectionCubit(), child: const PasswordResetSchemaSelectionScreen()),
                 AppConstants.routeHome: (context) =>
                     BlocProvider(create: (context) => GetCurrencyCubit(), child: const HomeScreen()),
-                AppConstants.routeNewExpenses: (context) => const NewExpensesScreen(),
+                AppConstants.routeNewExpenses: (context) => BlocProvider(
+                    create: (context) => NewExpenseCubit(MroDatabaseSingleton.database, _mroRepository, widget.preference),
+                    child: const NewExpensesScreen()),
                 AppConstants.routeArchive: (context) =>
                     BlocProvider(create: (context) => GetExpenseListCubit(), child: const ArchiveScreen()),
                 AppConstants.routeMyApprovals: (context) => const MyApprovalsScreen(),

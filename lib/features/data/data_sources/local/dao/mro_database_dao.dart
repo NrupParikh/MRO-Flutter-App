@@ -41,6 +41,9 @@ abstract class MroDAO {
   @Insert(onConflict: OnConflictStrategy.replace)
   Future<int> insertOrganizationType(OrganizationType organizationType);
 
+  @Query("select * from Organizations where employeeId= :id")
+  Future<List<Organizations>> getOrganizations(int id);
+
 // @Insert(onConflict: OnConflictStrategy.replace)
 // Future<List<int>> insertAllAttributes(List<Attributes> attributesList);
 
