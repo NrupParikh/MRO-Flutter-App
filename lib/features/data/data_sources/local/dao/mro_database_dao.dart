@@ -42,7 +42,13 @@ abstract class MroDAO {
   Future<int> insertOrganizationType(OrganizationType organizationType);
 
   @Query("select * from Organizations where employeeId= :id")
-  Future<List<Organizations>> getOrganizations(int id);
+  Future<List<Organizations>> getOrganizationsBasedOnEmployee(int id);
+
+  @Query("select * from Currency")
+  Future<List<Currency>> getAllCurrencies();
+
+  @Query("select * from accounts where organizationId in (select organizationId from organizations where employeeId = :id)")
+  Future<List<Accounts>> getAccountsBasedOnOrganizations(int id);
 
 // @Insert(onConflict: OnConflictStrategy.replace)
 // Future<List<int>> insertAllAttributes(List<Attributes> attributesList);

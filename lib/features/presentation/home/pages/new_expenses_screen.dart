@@ -1,13 +1,19 @@
+import 'dart:io';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:mro/features/data/models/sign_in/accounts.dart';
 import 'package:mro/features/presentation/home/bloc/new_expense/new_expense_cubit.dart';
 import 'package:mro/features/presentation/home/bloc/new_expense/new_expense_state.dart';
 
 import '../../../../config/constants/color_constants.dart';
 import '../../../../config/constants/string_constants.dart';
 import '../../../data/data_sources/local/database/mro_database.dart';
+import '../../../data/models/currency/currency.dart';
 import '../../../data/models/sign_in/organizations.dart';
 import '../../../widgets/my_custom_widget.dart';
 
@@ -22,8 +28,16 @@ class NewExpensesScreen extends StatefulWidget {
 
 class _NewExpensesScreenState extends State<NewExpensesScreen> {
   late List<OrganizationDropDown> organizationList;
+  late List<CurrencyDropDown> currencyList;
+  late List<AccountDropDown> accountList;
+
   late OrganizationDropDown drpOrganizationValue;
+  late CurrencyDropDown drpCurrencyValue;
+  late AccountDropDown drpAccountValue;
+
   late bool isOrganizationDropDownSelected;
+  late bool isCurrencyDropDownSelected;
+  late bool isAccountDropDownSelected;
 
   TextEditingController expenseDateController = TextEditingController();
   TextEditingController expenseAmountController = TextEditingController();
@@ -37,7 +51,12 @@ class _NewExpensesScreenState extends State<NewExpensesScreen> {
   void initState() {
     super.initState();
     organizationList = <OrganizationDropDown>[];
+    currencyList = <CurrencyDropDown>[];
+    accountList = <AccountDropDown>[];
+
     isOrganizationDropDownSelected = false;
+    isCurrencyDropDownSelected = false;
+    isAccountDropDownSelected = false;
     debugPrint("TAG_initState");
   }
 
@@ -76,16 +95,56 @@ class _NewExpensesScreenState extends State<NewExpensesScreen> {
           builder: (context, state) {
             if (state is NewExpenseInitialState) {
               debugPrint("TAG_NewExpenseInitialState");
+
+              // ================= ORGANIZATION DB LIST
+
               if (isOrganizationDropDownSelected == false) {
                 if (state.organizations.isNotEmpty) {
                   List<Organizations> organizationsFuture = state.organizations;
                   organizationList.clear();
+                  debugPrint("=========== ORGANIZATIONS=========== ");
                   for (int i = 0; i < organizationsFuture!.length; i++) {
                     var organizationData = organizationsFuture[i];
-                    debugPrint("TAG_organization_Name${organizationsFuture[i].name}");
+                    debugPrint("TAG_organization_$i : ${organizationsFuture[i].name}");
                     organizationList.add(OrganizationDropDown(organizationData.id, organizationData.name));
                   }
                   drpOrganizationValue = organizationList.first;
+                }
+              }
+
+              // ================= CURRENCY DB LIST
+
+              if (isCurrencyDropDownSelected == false) {
+                if (state.currencies.isNotEmpty) {
+                  List<Currency> currenciesFuture = state.currencies;
+                  currencyList.clear();
+                  debugPrint("=========== CURRENCY=========== ");
+                  for (int i = 0; i < currenciesFuture.length; i++) {
+                    var currencyData = currenciesFuture[i];
+                    debugPrint("TAG_currency_$i : ${currenciesFuture[i].name}");
+                    currencyList.add(CurrencyDropDown(currencyData.id, currencyData.name));
+                  }
+                  drpCurrencyValue = currencyList.first;
+                }
+              }
+
+              // ================= Account DB LIST
+
+              if (isAccountDropDownSelected == false) {
+                if (state.accounts.isNotEmpty) {
+                  List<Accounts> accountFuture = state.accounts;
+                  accountList.clear();
+                  debugPrint("=========== ACCOUNT =========== ");
+                  var firstOrganizationId = drpOrganizationValue.id;
+                  debugPrint("TAG_firstOrganizationId $firstOrganizationId");
+                  for (int i = 0; i < accountFuture.length; i++) {
+                    var accountData = accountFuture[i];
+                    if (accountData.organizationId == firstOrganizationId) {
+                      debugPrint("TAG_account_$i : ${accountFuture[i].name}");
+                      accountList.add(AccountDropDown(accountData.id, accountData.name, accountData.organizationId));
+                    }
+                  }
+                  drpAccountValue = accountList.first;
                 }
               }
 
@@ -140,6 +199,7 @@ class _NewExpensesScreenState extends State<NewExpensesScreen> {
                                     setState(() {
                                       drpOrganizationValue = value!;
                                       isOrganizationDropDownSelected = true;
+                                      isAccountDropDownSelected = false;
                                     });
                                   },
                                 ),
@@ -259,26 +319,25 @@ class _NewExpensesScreenState extends State<NewExpensesScreen> {
                                       child: Padding(
                                         padding: const EdgeInsets.only(left: 8, right: 8),
                                         child: DropdownButtonHideUnderline(
-                                          child: DropdownButton<OrganizationDropDown>(
+                                          child: DropdownButton<CurrencyDropDown>(
                                             isExpanded: true,
                                             // Full width
-                                            value: drpOrganizationValue,
+                                            value: drpCurrencyValue,
                                             style: const TextStyle(color: Colors.black),
                                             underline: Container(
                                               height: 2,
                                               color: Colors.black,
                                             ),
-                                            items: organizationList
-                                                .map<DropdownMenuItem<OrganizationDropDown>>((OrganizationDropDown value) {
-                                              return DropdownMenuItem<OrganizationDropDown>(
+                                            items: currencyList.map<DropdownMenuItem<CurrencyDropDown>>((CurrencyDropDown value) {
+                                              return DropdownMenuItem<CurrencyDropDown>(
                                                 value: value,
                                                 child: Text(value.name.toString()),
                                               );
                                             }).toList(),
-                                            onChanged: (OrganizationDropDown? value) {
+                                            onChanged: (CurrencyDropDown? value) {
                                               setState(() {
-                                                drpOrganizationValue = value!;
-                                                isOrganizationDropDownSelected = true;
+                                                drpCurrencyValue = value!;
+                                                isCurrencyDropDownSelected = true;
                                               });
                                             },
                                           ),
@@ -458,7 +517,7 @@ class _NewExpensesScreenState extends State<NewExpensesScreen> {
                             const SizedBox(
                               height: 16,
                             ),
-                            // =================== ORGANIZATION LABEL AND DROP DOWN
+                            // =================== Account LABEL AND DROP DOWN
 
                             const Padding(
                               padding: EdgeInsets.only(left: 8, right: 8),
@@ -472,26 +531,25 @@ class _NewExpensesScreenState extends State<NewExpensesScreen> {
                             Padding(
                               padding: const EdgeInsets.only(left: 8, right: 8),
                               child: DropdownButtonHideUnderline(
-                                child: DropdownButton<OrganizationDropDown>(
+                                child: DropdownButton<AccountDropDown>(
                                   isExpanded: true,
                                   // Full width
-                                  value: drpOrganizationValue,
+                                  value: drpAccountValue,
                                   style: const TextStyle(color: Colors.black),
                                   underline: Container(
                                     height: 2,
                                     color: Colors.black,
                                   ),
-                                  items:
-                                      organizationList.map<DropdownMenuItem<OrganizationDropDown>>((OrganizationDropDown value) {
-                                    return DropdownMenuItem<OrganizationDropDown>(
+                                  items: accountList.map<DropdownMenuItem<AccountDropDown>>((AccountDropDown value) {
+                                    return DropdownMenuItem<AccountDropDown>(
                                       value: value,
                                       child: Text(value.name.toString()),
                                     );
                                   }).toList(),
-                                  onChanged: (OrganizationDropDown? value) {
+                                  onChanged: (AccountDropDown? value) {
                                     setState(() {
-                                      drpOrganizationValue = value!;
-                                      isOrganizationDropDownSelected = true;
+                                      drpAccountValue = value!;
+                                      isAccountDropDownSelected = true;
                                     });
                                   },
                                 ),
@@ -539,7 +597,7 @@ class _NewExpensesScreenState extends State<NewExpensesScreen> {
   }
 
   Future<List<Organizations>> fetchOrganizations(MroDatabase database, int employeeId) {
-    final organizations = database.mroDao.getOrganizations(employeeId!);
+    final organizations = database.mroDao.getOrganizationsBasedOnEmployee(employeeId!);
     return organizations;
   }
 }
@@ -551,27 +609,78 @@ class OrganizationDropDown {
   OrganizationDropDown(this.id, this.name);
 }
 
+class CurrencyDropDown {
+  int? id;
+  String? name;
+
+  CurrencyDropDown(this.id, this.name);
+}
+
+class AccountDropDown {
+  int? id;
+  String? name;
+  int? organizationId;
+
+  AccountDropDown(this.id, this.name, this.organizationId);
+}
+
 // Choose Option Dialog
 
 void showChooseOptionDialog(BuildContext context) {
   var dialog = ChooseOptionDialog(
     takeAPhoto: () {
-      Fluttertoast.showToast(msg: "Take a Photo");
+      Fluttertoast.showToast(msg: StringConstants.optionTakeAPhoto);
+      pickFromCamera();
       Navigator.of(context, rootNavigator: true).pop();
     },
     chooseFromGallery: () {
-      Fluttertoast.showToast(msg: "Choose From Gallery");
+      Fluttertoast.showToast(msg: StringConstants.optionChooseFromGallery);
+      pickFromGallery();
       Navigator.of(context, rootNavigator: true).pop();
     },
     chooseDocument: () {
-      Fluttertoast.showToast(msg: "Choose Document");
+      Fluttertoast.showToast(msg: StringConstants.optionChooseDocument);
       Navigator.of(context, rootNavigator: true).pop();
     },
     onCancelButtonPressed: () {
-      Fluttertoast.showToast(msg: "Cancel");
+      Fluttertoast.showToast(msg: StringConstants.optionCancel);
       Navigator.of(context, rootNavigator: true).pop();
     },
   );
 
   showDialog(context: context, barrierDismissible: false, builder: (BuildContext context) => dialog);
+}
+
+Future<File?> pickFromGallery() async {
+  try {
+    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      final imageTemp = File(image.path);
+      debugPrint("TAG_GALLERY_IMAGE_PATH ${imageTemp.path.toString()}");
+      Fluttertoast.showToast(msg: "Gallery Image ${imageTemp.path.toString()}");
+      return imageTemp;
+    } else {
+      return null;
+    }
+  } on PlatformException catch (exception) {
+    debugPrint("TAG_EXCEPTION ${exception.toString()}");
+  }
+  return null;
+}
+
+Future<File?> pickFromCamera() async {
+  try {
+    final image = await ImagePicker().pickImage(source: ImageSource.camera);
+    if (image != null) {
+      final imageTemp = File(image.path);
+      debugPrint("TAG_CAMERA_IMAGE_PATH ${imageTemp.path.toString()}");
+      Fluttertoast.showToast(msg: "Camera Image ${imageTemp.path.toString()}");
+      return imageTemp;
+    } else {
+      return null;
+    }
+  } on PlatformException catch (exception) {
+    debugPrint("TAG_EXCEPTION ${exception.toString()}");
+  }
+  return null;
 }

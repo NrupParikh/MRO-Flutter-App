@@ -284,7 +284,7 @@ class _$MroDAO extends MroDAO {
   final InsertionAdapter<OrganizationType> _organizationTypeInsertionAdapter;
 
   @override
-  Future<List<Organizations>> getOrganizations(int id) async {
+  Future<List<Organizations>> getOrganizationsBasedOnEmployee(int id) async {
     return _queryAdapter.queryList(
         'select * from Organizations where employeeId= ?1',
         mapper: (Map<String, Object?> row) => Organizations(
@@ -311,6 +311,27 @@ class _$MroDAO extends MroDAO {
             substituteSubValue: row['substituteSubValue'] == null
                 ? null
                 : (row['substituteSubValue'] as int) != 0),
+        arguments: [id]);
+  }
+
+  @override
+  Future<List<Currency>> getAllCurrencies() async {
+    return _queryAdapter.queryList('select * from Currency',
+        mapper: (Map<String, Object?> row) => Currency(
+            id: row['id'] as int?,
+            version: row['version'] as int?,
+            name: row['name'] as String?,
+            iso: row['iso'] as String?,
+            prefix: row['prefix'] as String?,
+            postfix: row['postfix'] as String?,
+            currencyFormat: row['currencyFormat'] as String?));
+  }
+
+  @override
+  Future<List<Accounts>> getAccountsBasedOnOrganizations(int id) async {
+    return _queryAdapter.queryList(
+        'select * from accounts where organizationId in (select organizationId from organizations where employeeId = ?1)',
+        mapper: (Map<String, Object?> row) => Accounts(id: row['id'] as int?, organizationId: row['organizationId'] as int?, version: row['version'] as int?, name: row['name'] as String?, active: row['active'] == null ? null : (row['active'] as int) != 0, div: row['div'] as String?, dept: row['dept'] as String?, account: row['account'] as String?, sub: row['sub'] as String?, receiptVerifyRequired: row['receiptVerifyRequired'] == null ? null : (row['receiptVerifyRequired'] as int) != 0, thresholdAmount: row['thresholdAmount'] as String?, receiptUploadRequired: row['receiptUploadRequired'] == null ? null : (row['receiptUploadRequired'] as int) != 0, fields: _fieldsListConverter.decode(row['fields'] as String), identifier: row['identifier'] as String?),
         arguments: [id]);
   }
 
