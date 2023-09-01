@@ -6,7 +6,6 @@ import 'package:mro/config/constants/string_constants.dart';
 import 'package:mro/config/exception_handling/api_error.dart';
 import 'package:mro/config/shared_preferences/singleton/mro_shared_preference.dart';
 import 'package:mro/features/data/data_sources/local/database/mro_database.dart';
-import 'package:mro/features/data/models/sign_in/accounts.dart';
 import 'package:mro/features/domain/repository/singleton/mro_repository.dart';
 import 'package:mro/features/presentation/home/bloc/new_expense/new_expense_state.dart';
 
