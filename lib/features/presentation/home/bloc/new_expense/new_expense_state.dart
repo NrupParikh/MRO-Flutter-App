@@ -22,3 +22,5 @@ class NewExpenseFailureState extends NewExpenseState {
 
   NewExpenseFailureState(this.newExpenseErrorMessage);
 }
+
+class NewExpenseRefreshState extends NewExpenseState {}

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -18,6 +19,7 @@ import '../../../data/models/sign_in/organizations.dart';
 import '../../../widgets/my_custom_widget.dart';
 
 GlobalKey<State> _dialogKey = GlobalKey<State>();
+bool isPickerClosed = false;
 
 class NewExpensesScreen extends StatefulWidget {
   const NewExpensesScreen({super.key});
@@ -47,9 +49,18 @@ class _NewExpensesScreenState extends State<NewExpensesScreen> {
 
   int radioGroupSelectedValue = 1;
 
+  late ImagePicker imagePicker;
+  late List<XFile>? imageFileList;
+  late NewExpenseCubit newExpenseCubit;
+
   @override
   void initState() {
     super.initState();
+
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      newExpenseCubit = context.read<NewExpenseCubit>();
+    });
+
     organizationList = <OrganizationDropDown>[];
     currencyList = <CurrencyDropDown>[];
     accountList = <AccountDropDown>[];
@@ -58,6 +69,9 @@ class _NewExpensesScreenState extends State<NewExpensesScreen> {
     isCurrencyDropDownSelected = false;
     isAccountDropDownSelected = false;
     debugPrint("TAG_initState");
+    expenseAmountController.text = "0.00";
+    imagePicker = ImagePicker();
+    imageFileList = [];
   }
 
   @override
@@ -69,6 +83,7 @@ class _NewExpensesScreenState extends State<NewExpensesScreen> {
   @override
   Widget build(BuildContext context) {
     Connectivity connectivity = Connectivity();
+
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -77,7 +92,10 @@ class _NewExpensesScreenState extends State<NewExpensesScreen> {
         ),
         body: BlocConsumer<NewExpenseCubit, NewExpenseState>(
           listenWhen: (context, state) {
-            return state is NewExpenseSuccessState || state is NewExpenseFailureState || state is LoadingState;
+            return state is NewExpenseSuccessState ||
+                state is NewExpenseFailureState ||
+                state is LoadingState ||
+                state is NewExpenseRefreshState;
           },
           listener: (context, state) {
             if (state is NewExpenseSuccessState) {
@@ -87,6 +105,8 @@ class _NewExpensesScreenState extends State<NewExpensesScreen> {
               displayDialog(context, state.newExpenseErrorMessage);
             } else if (state is LoadingState) {
               showLoading(context, _dialogKey);
+            } else if (state is NewExpenseRefreshState) {
+              setState(() {});
             }
           },
           buildWhen: (context, state) {
@@ -148,14 +168,14 @@ class _NewExpensesScreenState extends State<NewExpensesScreen> {
                 }
               }
 
-              return Column(
-                children: [
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (organizationList.length > 1) ...[
+              if (organizationList.isNotEmpty && currencyList.isNotEmpty && accountList.isNotEmpty) {
+                return Column(
+                  children: [
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
                             const SizedBox(
                               height: 8,
                             ),
@@ -212,7 +232,7 @@ class _NewExpensesScreenState extends State<NewExpensesScreen> {
                             Row(
                               children: [
                                 Expanded(
-                                  flex: 8,
+                                  flex: 7,
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
@@ -249,21 +269,38 @@ class _NewExpensesScreenState extends State<NewExpensesScreen> {
                                   ),
                                 ),
                                 Expanded(
-                                  flex: 2,
+                                  flex: 3,
                                   child: Padding(
                                     padding: const EdgeInsets.only(right: 8),
                                     child: Align(
                                       alignment: Alignment.centerRight,
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          showChooseOptionDialog(context);
-                                        },
-                                        child: Image.asset(
-                                          "assets/images/ic_camera.png",
-                                          width: 48,
-                                          height: 48,
-                                          color: ColorConstants.blueThemeColor,
-                                        ),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          if (imageFileList!.isNotEmpty) ...[
+                                            GestureDetector(
+                                              onTap: () {
+                                                Fluttertoast.showToast(msg: imageFileList!.last.path.toString());
+                                              },
+                                              child: Image.file(
+                                                File(imageFileList!.last.path),
+                                                width: 48,
+                                                height: 48,
+                                              ),
+                                            ),
+                                          ],
+                                          GestureDetector(
+                                            onTap: () {
+                                              showChooseOptionDialog(context, imagePicker, imageFileList, newExpenseCubit);
+                                            },
+                                            child: Image.asset(
+                                              "assets/images/ic_camera.png",
+                                              width: 48,
+                                              height: 48,
+                                              color: ColorConstants.blueThemeColor,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ),
@@ -295,13 +332,13 @@ class _NewExpensesScreenState extends State<NewExpensesScreen> {
                                       Padding(
                                         padding: const EdgeInsets.only(left: 8, right: 8),
                                         child: TextField(
-                                          style: const TextStyle(color: Colors.black),
+                                          style: const TextStyle(color: Colors.grey),
                                           controller: expenseAmountController,
                                           enabled: false,
                                           decoration: const InputDecoration(
                                             enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.black)),
                                             focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.black)),
-                                            hintText: "0.00",
+                                            hintText: StringConstants.hintEnterAmount,
                                             hintStyle: TextStyle(color: Colors.grey),
                                             floatingLabelBehavior: FloatingLabelBehavior.never,
                                           ),
@@ -557,26 +594,42 @@ class _NewExpensesScreenState extends State<NewExpensesScreen> {
                             ),
                             const SizedBox(height: 8),
                           ],
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                  CustomElevatedButton(
-                      buttonText: StringConstants.save.toUpperCase(),
-                      onPressed: () async {
-                        await connectivity.checkConnectivity().then((value) {
-                          if (value == ConnectivityResult.none) {
-                            // ToDo NO
-                          } else {
-                            // ToDo YES
-                          }
-                        });
-                      },
-                      buttonBgColor: ColorConstants.blueThemeColor,
-                      leftPadding: 8,
-                      rightPadding: 8),
-                ],
-              );
+                    CustomElevatedButton(
+                        buttonText: StringConstants.save.toUpperCase(),
+                        onPressed: () async {
+                          await connectivity.checkConnectivity().then((value) {
+                            if (value == ConnectivityResult.none) {
+                              // ToDo NO
+                            } else {
+                              // ToDo YES
+                              debugPrint("==================== SAVE INFO ====================");
+                              debugPrint("TAG_Organization_Id   = ${drpOrganizationValue.id}");
+                              debugPrint("TAG_Organization_Name = ${drpOrganizationValue.name}");
+                              debugPrint("TAG_Expense_Date      = ${expenseDateController.text}");
+                              debugPrint("TAG_Expense_Amount    = ${expenseAmountController.text}");
+                              debugPrint("TAG_Currency_Id       = ${drpCurrencyValue.id}");
+                              debugPrint("TAG_Currency_Name     = ${drpCurrencyValue.name}");
+                              debugPrint("TAG_VAT1_Amount       = ${vat1Controller.text}");
+                              debugPrint("TAG_VAT2_Amount       = ${vat2Controller.text}");
+                              debugPrint("TAG_TOTAL_Amount      = ${totalOfVAT1andVAT2.text}");
+                              debugPrint("TAG_ComCC_or_Personal = ${radioGroupSelectedValue.toString()}");
+                              debugPrint("TAG_Account_Id        = ${drpAccountValue.id}");
+                              debugPrint("TAG_Account_Name      = ${drpAccountValue.name}");
+                              debugPrint("====================================================");
+                            }
+                          });
+                        },
+                        buttonBgColor: ColorConstants.blueThemeColor,
+                        leftPadding: 8,
+                        rightPadding: 8),
+                  ],
+                );
+              } else {
+                return const Center(child: CircularProgressIndicator());
+              }
             } else {
               return const Center(child: Text('Unknown state'));
             }
@@ -626,16 +679,17 @@ class AccountDropDown {
 
 // Choose Option Dialog
 
-void showChooseOptionDialog(BuildContext context) {
+void showChooseOptionDialog(
+    BuildContext context, ImagePicker imagePicker, List<XFile>? imageFileList, NewExpenseCubit newExpenseCubit) {
   var dialog = ChooseOptionDialog(
     takeAPhoto: () {
       Fluttertoast.showToast(msg: StringConstants.optionTakeAPhoto);
-      pickFromCamera();
+      pickFromCamera(newExpenseCubit);
       Navigator.of(context, rootNavigator: true).pop();
     },
     chooseFromGallery: () {
       Fluttertoast.showToast(msg: StringConstants.optionChooseFromGallery);
-      pickFromGallery();
+      pickMultipleImageFromGallery(imagePicker, imageFileList, newExpenseCubit);
       Navigator.of(context, rootNavigator: true).pop();
     },
     chooseDocument: () {
@@ -651,30 +705,38 @@ void showChooseOptionDialog(BuildContext context) {
   showDialog(context: context, barrierDismissible: false, builder: (BuildContext context) => dialog);
 }
 
-Future<File?> pickFromGallery() async {
+void pickMultipleImageFromGallery(ImagePicker imagePicker, List<XFile>? imageFileList, NewExpenseCubit newExpenseCubit) async {
   try {
-    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (image != null) {
-      final imageTemp = File(image.path);
-      debugPrint("TAG_GALLERY_IMAGE_PATH ${imageTemp.path.toString()}");
-      Fluttertoast.showToast(msg: "Gallery Image ${imageTemp.path.toString()}");
-      return imageTemp;
-    } else {
-      return null;
+    final List<XFile> selectedImages = await imagePicker.pickMultiImage();
+    if (selectedImages.isNotEmpty) {
+      imageFileList!.addAll(selectedImages);
     }
+    debugPrint("==================== GALLERY IMAGE(S) ====================");
+    debugPrint("TAG_Image_List_Length:${imageFileList!.length}");
+    if (imageFileList.isNotEmpty) {
+      for (int i = 0; i < imageFileList.length; i++) {
+        debugPrint("TAG_FILE_PATH_$i      = ${imageFileList[i].path.toString()}");
+        debugPrint("TAG_FILE_NAME_$i      = ${imageFileList[i].name.toString()}");
+        debugPrint("TAG_FILE_MIME_TYPE_$i = ${imageFileList[i].mimeType.toString()}");
+      }
+      debugPrint("====================================================");
+    }
+    newExpenseCubit.refreshUI();
   } on PlatformException catch (exception) {
     debugPrint("TAG_EXCEPTION ${exception.toString()}");
   }
+
   return null;
 }
 
-Future<File?> pickFromCamera() async {
+Future<File?> pickFromCamera(NewExpenseCubit newExpenseCubit) async {
   try {
     final image = await ImagePicker().pickImage(source: ImageSource.camera);
     if (image != null) {
       final imageTemp = File(image.path);
       debugPrint("TAG_CAMERA_IMAGE_PATH ${imageTemp.path.toString()}");
       Fluttertoast.showToast(msg: "Camera Image ${imageTemp.path.toString()}");
+      isPickerClosed = true;
       return imageTemp;
     } else {
       return null;

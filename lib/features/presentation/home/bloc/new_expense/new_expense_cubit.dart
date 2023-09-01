@@ -33,13 +33,16 @@ class NewExpenseCubit extends Cubit<NewExpenseState> {
     emit(NewExpenseInitialState(organizations, currencies, accounts));
   }
 
+  Future<void> refreshUI() async {
+    emit(NewExpenseRefreshState());
+  }
+
   void submitForm(MroDatabase mroDatabase, MroRepository mroRepository, MroSharedPreference pref, bool isOnline) {
     if (!isOnline) {
       emit(NewExpenseFailureState(StringConstants.mgsNoInternet));
     } else {
       try {
         emit(LoadingState());
-        // await storeLoginResponse(userName, schemaId, mroDatabase, mroRepository, password, pref);
         emit(NewExpenseSuccessState());
       } on DioException catch (ex) {
         emit(NewExpenseFailureState(apiError(ex)));
