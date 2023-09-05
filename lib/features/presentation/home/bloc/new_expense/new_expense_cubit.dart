@@ -37,16 +37,34 @@ class NewExpenseCubit extends Cubit<NewExpenseState> {
     emit(NewExpenseRefreshState());
   }
 
-  void submitForm(MroDatabase mroDatabase, MroRepository mroRepository, MroSharedPreference pref, bool isOnline) {
-    if (!isOnline) {
+  void submitForm(MroDatabase mroDatabase, MroRepository mroRepository, MroSharedPreference pref, bool isOnline,
+      String expenseDate, String vat1, String vat2, String vatTotal) {
+    if (expenseDate.isEmpty) {
+      emit(NewExpenseFailureState(StringConstants.valMsgSelectExpenseDate));
+    } else if (vat1.isEmpty) {
+      emit(NewExpenseFailureState(StringConstants.valMsgVat1));
+    } else if (vat2.isEmpty) {
+      emit(NewExpenseFailureState(StringConstants.valMsgVat2));
+    } else if (double.parse(vat1) > double.parse(vat2)) {
+      emit(NewExpenseFailureState(StringConstants.valMsgVat1MustBeLessThanVat1));
+    } else if (vatTotal.isEmpty) {
+      emit(NewExpenseFailureState(StringConstants.valMsgVatTotal));
+    } else if ((double.parse(vat1) + double.parse(vat2)) > double.parse(vatTotal)) {
+      emit(NewExpenseFailureState(StringConstants.valMsgTotalMount));
+    } else if (!isOnline) {
       emit(NewExpenseFailureState(StringConstants.mgsNoInternet));
     } else {
       try {
-        emit(LoadingState());
+        // emit(LoadingState());
         emit(NewExpenseSuccessState());
       } on DioException catch (ex) {
         emit(NewExpenseFailureState(apiError(ex)));
       }
     }
+  }
+
+  bool checkValidation(String expenseDate, String vat1, String vat2, String vatTotal) {
+    if (expenseDate.isEmpty) {}
+    return false;
   }
 }

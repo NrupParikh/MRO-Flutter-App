@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:intl/intl.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -7,15 +7,19 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mro/config/constants/app_constants.dart';
 import 'package:mro/features/data/models/sign_in/accounts.dart';
 import 'package:mro/features/presentation/home/bloc/new_expense/new_expense_cubit.dart';
 import 'package:mro/features/presentation/home/bloc/new_expense/new_expense_state.dart';
 
 import '../../../../config/constants/color_constants.dart';
 import '../../../../config/constants/string_constants.dart';
+import '../../../../config/shared_preferences/provider/mro_shared_preference_provider.dart';
 import '../../../data/data_sources/local/database/mro_database.dart';
+import '../../../data/data_sources/local/database/provider/mro_database_provider.dart';
 import '../../../data/models/currency/currency.dart';
 import '../../../data/models/sign_in/organizations.dart';
+import '../../../domain/repository/providers/mro_repository_provider.dart';
 import '../../../widgets/my_custom_widget.dart';
 
 GlobalKey<State> _dialogKey = GlobalKey<State>();
@@ -53,6 +57,10 @@ class _NewExpensesScreenState extends State<NewExpensesScreen> {
   late List<XFile>? imageFileList;
   late NewExpenseCubit newExpenseCubit;
 
+  FocusNode vat1TextFieldFocusNode = FocusNode();
+  FocusNode vat2TextFieldFocusNode = FocusNode();
+  FocusNode totalVatTextFieldFocusNode = FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -72,10 +80,38 @@ class _NewExpensesScreenState extends State<NewExpensesScreen> {
     expenseAmountController.text = "0.00";
     imagePicker = ImagePicker();
     imageFileList = [];
+    expenseDateController.text = "";
+    vat1Controller.addListener(_printLatestValueOfVAT1);
+    vat2Controller.addListener(_printLatestValueOfVAT2);
+    totalOfVAT1andVAT2.addListener(_printLatestValueOfTotalAmount);
+  }
+
+  void _printLatestValueOfVAT1() {
+    final text = vat1Controller.text;
+    print('vat1Controller text field: $text (${text.characters.length})');
+    setExpenseAmount();
+  }
+
+  void _printLatestValueOfVAT2() {
+    final text = vat2Controller.text;
+    print('vat2Controller text field: $text (${text.characters.length})');
+    setExpenseAmount();
+  }
+
+  void _printLatestValueOfTotalAmount() {
+    final text = totalOfVAT1andVAT2.text;
+    print('totalOfVAT1andVAT2 text field: $text (${text.characters.length})');
+    setExpenseAmount();
   }
 
   @override
   void dispose() {
+    // Clean up the controller when the widget is removed from the widget tree.
+    expenseDateController.dispose();
+    expenseAmountController.dispose();
+    vat1Controller.dispose();
+    vat2Controller.dispose();
+    totalOfVAT1andVAT2.dispose();
     super.dispose();
     debugPrint("TAG_disposeState");
   }
@@ -83,6 +119,9 @@ class _NewExpensesScreenState extends State<NewExpensesScreen> {
   @override
   Widget build(BuildContext context) {
     Connectivity connectivity = Connectivity();
+    final mroRepository = MroRepositoryProvider.of(context)?.mroRepository;
+    final pref = MroSharedPreferenceProvider.of(context)?.preference;
+    final mroDatabase = MroDatabaseProvider.of(context).database;
 
     return Scaffold(
         appBar: AppBar(
@@ -100,6 +139,7 @@ class _NewExpensesScreenState extends State<NewExpensesScreen> {
           listener: (context, state) {
             if (state is NewExpenseSuccessState) {
               hideLoading(_dialogKey);
+              Fluttertoast.showToast(msg: "");
             } else if (state is NewExpenseFailureState) {
               hideLoading(_dialogKey);
               displayDialog(context, state.newExpenseErrorMessage);
@@ -255,6 +295,10 @@ class _NewExpensesScreenState extends State<NewExpensesScreen> {
                                         padding: const EdgeInsets.only(left: 8, right: 8),
                                         child: TextField(
                                           style: const TextStyle(color: Colors.black),
+                                          readOnly: true,
+                                          keyboardType: TextInputType.datetime,
+                                          textInputAction: TextInputAction.next,
+                                          maxLines: 1,
                                           controller: expenseDateController,
                                           decoration: const InputDecoration(
                                             enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.black)),
@@ -263,6 +307,9 @@ class _NewExpensesScreenState extends State<NewExpensesScreen> {
                                             hintStyle: TextStyle(color: Colors.grey),
                                             floatingLabelBehavior: FloatingLabelBehavior.never,
                                           ),
+                                          onTap: () async {
+                                            await showDatePickerDialog(context);
+                                          },
                                         ),
                                       ),
                                     ],
@@ -333,6 +380,8 @@ class _NewExpensesScreenState extends State<NewExpensesScreen> {
                                         padding: const EdgeInsets.only(left: 8, right: 8),
                                         child: TextField(
                                           style: const TextStyle(color: Colors.grey),
+                                          keyboardType: TextInputType.number,
+                                          maxLines: 1,
                                           controller: expenseAmountController,
                                           enabled: false,
                                           decoration: const InputDecoration(
@@ -418,6 +467,13 @@ class _NewExpensesScreenState extends State<NewExpensesScreen> {
                                         child: TextField(
                                           style: const TextStyle(color: Colors.black),
                                           controller: vat1Controller,
+                                          textInputAction: TextInputAction.next,
+                                          focusNode: vat1TextFieldFocusNode,
+                                          onSubmitted: (String value) {
+                                            vat2TextFieldFocusNode.requestFocus();
+                                          },
+                                          keyboardType: TextInputType.number,
+                                          maxLines: 1,
                                           decoration: const InputDecoration(
                                             enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.black)),
                                             focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.black)),
@@ -449,12 +505,17 @@ class _NewExpensesScreenState extends State<NewExpensesScreen> {
                                           )
                                         ]),
                                       ),
-                                      // Text("data")
                                       Padding(
                                         padding: const EdgeInsets.only(left: 8, right: 8),
                                         child: TextField(
                                           style: const TextStyle(color: Colors.black),
                                           controller: vat2Controller,
+                                          keyboardType: TextInputType.number,
+                                          focusNode: vat2TextFieldFocusNode,
+                                          onSubmitted: (String value) {
+                                            totalVatTextFieldFocusNode.requestFocus();
+                                          },
+                                          maxLines: 1,
                                           decoration: const InputDecoration(
                                             enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.black)),
                                             focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.black)),
@@ -494,6 +555,13 @@ class _NewExpensesScreenState extends State<NewExpensesScreen> {
                               child: TextField(
                                 style: const TextStyle(color: Colors.black),
                                 controller: totalOfVAT1andVAT2,
+                                keyboardType: TextInputType.number,
+                                textInputAction: TextInputAction.done,
+                                focusNode: totalVatTextFieldFocusNode,
+                                onSubmitted: (String value) {
+                                  FocusScope.of(context).unfocus();
+                                },
+                                maxLines: 1,
                                 decoration: const InputDecoration(
                                   enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.black)),
                                   focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.black)),
@@ -601,8 +669,13 @@ class _NewExpensesScreenState extends State<NewExpensesScreen> {
                         buttonText: StringConstants.save.toUpperCase(),
                         onPressed: () async {
                           await connectivity.checkConnectivity().then((value) {
+                            var expenseDate = expenseDateController.text.toString();
+                            var vat1 = vat1Controller.text.toString();
+                            var vat2 = vat2Controller.text.toString();
+                            var vatTotal = totalOfVAT1andVAT2.text.toString();
                             if (value == ConnectivityResult.none) {
-                              // ToDo NO
+                              newExpenseCubit.submitForm(
+                                  mroDatabase, mroRepository!, pref!, false, expenseDate, vat1, vat2, vatTotal);
                             } else {
                               // ToDo YES
                               debugPrint("==================== SAVE INFO ====================");
@@ -619,6 +692,8 @@ class _NewExpensesScreenState extends State<NewExpensesScreen> {
                               debugPrint("TAG_Account_Id        = ${drpAccountValue.id}");
                               debugPrint("TAG_Account_Name      = ${drpAccountValue.name}");
                               debugPrint("====================================================");
+                              newExpenseCubit.submitForm(
+                                  mroDatabase, mroRepository!, pref!, true, expenseDate, vat1, vat2, vatTotal);
                             }
                           });
                         },
@@ -637,12 +712,63 @@ class _NewExpensesScreenState extends State<NewExpensesScreen> {
         ));
   }
 
+  void setExpenseAmount() {
+    setState(() {
+      expenseAmountController.text = expenseAmount(vat1Controller.text, vat2Controller.text, totalOfVAT1andVAT2.text);
+    });
+  }
+
+  // ======================== DATE PICKER DIALOG
+  Future<void> showDatePickerDialog(BuildContext context) async {
+    DateTime? pickedDate = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(), //get today's date
+        firstDate: DateTime(2000), //DateTime.now() - not to allow to choose before today.
+        lastDate: DateTime(2101));
+
+    if (pickedDate != null) {
+      debugPrint("TAG_Picked_date_$pickedDate");
+      String formattedDate = DateFormat(AppConstants.dateFormatYYYYMMDD).format(pickedDate);
+      debugPrint("TAG_Picked_date_FORMATED_$formattedDate");
+      setState(() {
+        expenseDateController.text = formattedDate;
+      });
+    } else {
+      debugPrint("TAG_Picked_date_Note_Selected");
+      Fluttertoast.showToast(msg: "Expense Date not selected");
+    }
+  }
+
+  double returnDefaultIfEmpty(String value) {
+    if (value.isEmpty) {
+      return 0.0;
+    } else {
+      return double.parse(value);
+    }
+  }
+
+  String expenseAmount(String vat1, String vat2, String totalVat) {
+    double vat1Value = returnDefaultIfEmpty(vat1);
+    double vat2Value = returnDefaultIfEmpty(vat2);
+    double totalVatValue = returnDefaultIfEmpty(totalVat);
+    debugPrint("TAG_vat1Value_$vat1Value");
+    debugPrint("TAG_vat2Value_$vat2Value");
+    debugPrint("TAG_totalVatValue_$totalVatValue");
+    double ans = (totalVatValue - (vat1Value + vat2Value));
+    debugPrint("TAG_ans_$ans");
+    return ans.toString();
+  }
+
   void displayDialog(BuildContext context, String message) {
     var dialog = MyCustomAlertDialog(
       title: StringConstants.appFullName,
       description: message,
-      onOkButtonPressed: () {},
-      onCancelButtonPressed: () {},
+      onOkButtonPressed: () {
+        Navigator.of(context, rootNavigator: true).pop();
+      },
+      onCancelButtonPressed: () {
+        Navigator.of(context, rootNavigator: true).pop();
+      },
       hasCancelButton: false,
     );
 

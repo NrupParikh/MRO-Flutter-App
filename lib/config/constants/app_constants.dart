@@ -30,5 +30,6 @@ class AppConstants {
   static const String prefKeyIsisApprover = "isApprover";
   // Arguments
   static const String keyArgUserName = "arg_user_name";
+  static const String dateFormatYYYYMMDD = "yyyy-MM-dd";
 
 }

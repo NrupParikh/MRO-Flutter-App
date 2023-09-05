@@ -66,10 +66,17 @@ class StringConstants {
   static const String valMsgEnterUserName = "Please enter User name";
   static const String valMsgEnterPassword = "Please enter Password";
 
+  static const String valMsgSelectExpenseDate = "Please Select Expense Date";
+  static const String valMsgVat1= "Please Enter VAT1 Amount";
+  static const String valMsgVat2= "Please Enter VAT2 Amount";
+  static const String valMsgVatTotal= "Please Enter Total Amount";
+
   // ============ common
   static const String mgsNoInternet = "Please check your internet connection.";
   static const String msgConnectionTimeOut = "Connection timeout occurred";
   static const String msgUnknownError = "Unknown error occurred";
   static const String msgLogoutConfirmation = "Are you sure you want to Log Out of MRO?";
   static const String expenseStatus = "Status:";
+  static const String valMsgVat1MustBeLessThanVat1 = "VAT1 amount must be less than VAT2 amount";
+  static const String valMsgTotalMount = "Total Amount always bigger or equal to (VAT1+VAT2) Amount";
 }
